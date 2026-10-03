@@ -1,0 +1,185 @@
+// Money-Stack - Esquema de base de datos (PostgreSQL + Prisma)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ───────────── Enums ─────────────
+
+enum Role {
+  SUPER_ADMIN // control total, gestiona otros admins
+  ADMIN       // gestiona artistas, eventos y bookings
+  EDITOR      // crea/edita contenido, no gestiona bookings ni usuarios
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  FINISHED
+}
+
+enum BookingStatus {
+  PENDING
+  IN_REVIEW
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+// ───────────── Administradores ─────────────
+
+model AdminUser {
+  id                  String    @id @default(uuid()) @db.Uuid
+  email               String    @unique
+  passwordHash        String
+  name                String
+  role                Role      @default(EDITOR)
+  isActive            Boolean   @default(true)
+
+  // Protección contra fuerza bruta a nivel de cuenta
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+
+  refreshTokens       RefreshToken[]
+  createdEvents       Event[]           @relation("EventCreator")
+  handledBookings     BookingRequest[]  @relation("BookingHandler")
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([role])
+  @@map("admin_users")
+}
+
+// Refresh tokens con rotación: se guarda solo el hash, nunca el token
+model RefreshToken {
+  id          String    @id @default(uuid()) @db.Uuid
+  tokenHash   String    @unique
+  adminId     String    @db.Uuid
+  admin       AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  userAgent   String?
+  ipAddress   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([adminId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+// ───────────── Artistas / Talentos ─────────────
+
+model Artist {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  bio         String?  @db.Text
+  genres      String[]
+  imageUrl    String?
+  coverUrl    String?
+  socialLinks Json?    // { instagram, spotify, youtube, tiktok, ... }
+  isSigned    Boolean  @default(true)  // artista del sello vs. talento invitado
+  isBookable  Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+
+  events      EventArtist[]
+  bookings    BookingRequest[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, isFeatured])
+  @@map("artists")
+}
+
+// ───────────── Eventos ─────────────
+
+model Event {
+  id          String      @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String      @unique
+  description String?     @db.Text
+  venueName   String
+  address     String?
+  city        String      @default("Caucasia")
+  startsAt    DateTime
+  endsAt      DateTime?
+  coverUrl    String?
+  ticketUrl   String?
+  price       Decimal?    @db.Decimal(12, 2) // COP
+  capacity    Int?
+  status      EventStatus @default(DRAFT)
+
+  artists     EventArtist[]
+
+  createdById String?     @db.Uuid
+  createdBy   AdminUser?  @relation("EventCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([status, startsAt])
+  @@index([city])
+  @@map("events")
+}
+
+// Tabla pivote Evento <-> Artista (lineup)
+model EventArtist {
+  eventId     String  @db.Uuid
+  artistId    String  @db.Uuid
+  event       Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  artist      Artist  @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  order       Int     @default(0)   // orden en el cartel
+  isHeadliner Boolean @default(false)
+
+  @@id([eventId, artistId])
+  @@index([artistId])
+  @@map("event_artists")
+}
+
+// ───────────── Solicitudes de Booking ─────────────
+
+model BookingRequest {
+  id            String        @id @default(uuid()) @db.Uuid
+  // Datos del solicitante (formulario público, sin cuenta)
+  requesterName String
+  email         String
+  phone         String
+  organization  String?
+  // Detalles del evento a contratar
+  eventType     String        // boda, festival, evento privado, club, etc.
+  eventDate     DateTime
+  city          String
+  venue         String?
+  budget        Decimal?      @db.Decimal(12, 2) // COP
+  message       String        @db.Text
+  consentData   Boolean       @default(false)    // aceptación de tratamiento de datos (Ley 1581)
+
+  status        BookingStatus @default(PENDING)
+  adminNotes    String?       @db.Text
+
+  // Artista solicitado (opcional: puede ser una solicitud general al sello)
+  artistId      String?       @db.Uuid
+  artist        Artist?       @relation(fields: [artistId], references: [id], onDelete: SetNull)
+
+  handledById   String?       @db.Uuid
+  handledBy     AdminUser?    @relation("BookingHandler", fields: [handledById], references: [id], onDelete: SetNull)
+
+  ipAddress     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status, createdAt])
+  @@index([artistId])
+  @@index([eventDate])
+  @@map("booking_requests")
+}
