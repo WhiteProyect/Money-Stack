@@ -6,7 +6,7 @@ const validate = require('../middlewares/validate');
 const authenticate = require('../middlewares/authenticate');
 const noStore = require('../middlewares/noStore');
 const requireTrustedOrigin = require('../middlewares/trustedOrigin');
-const { authLimiter } = require('../middlewares/rateLimiters');
+const { authLimiter, refreshLimiter } = require('../middlewares/rateLimiters');
 const { loginSchema } = require('../validators/auth.validator');
 
 const router = Router();
@@ -14,7 +14,7 @@ const router = Router();
 router.use(noStore);
 
 router.post('/login', authLimiter, validate(loginSchema), controller.login);
-router.post('/refresh', authLimiter, requireTrustedOrigin, controller.refresh);
+router.post('/refresh', refreshLimiter, requireTrustedOrigin, controller.refresh);
 router.post('/logout', requireTrustedOrigin, controller.logout);
 router.post('/logout-all', authenticate, controller.logoutAll);
 router.get('/me', authenticate, controller.me);

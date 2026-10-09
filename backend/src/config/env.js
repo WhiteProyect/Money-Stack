@@ -55,5 +55,6 @@ module.exports = {
   ...env,
   isProd: env.NODE_ENV === 'production',
   corsOrigins: env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean),
+  accessTtlSeconds: parseDuration(env.JWT_ACCESS_EXPIRES_IN) / 1000,
   refreshTtlMs: parseDuration(env.JWT_REFRESH_EXPIRES_IN),
 };

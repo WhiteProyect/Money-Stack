@@ -24,7 +24,7 @@ const getMeta = (req) => ({ ip: req.ip, userAgent: req.get('user-agent') });
 
 const sessionResponse = (res, { accessToken, refreshToken, user }) => {
   setRefreshCookie(res, refreshToken);
-  res.json({ data: { accessToken, expiresIn: env.JWT_ACCESS_EXPIRES_IN, user } });
+  res.json({ data: { accessToken, expiresIn: env.accessTtlSeconds, user } });
 };
 
 const login = asyncHandler(async (req, res) => {
@@ -37,7 +37,7 @@ const refresh = asyncHandler(async (req, res) => {
     const session = await authService.refresh(req.cookies[COOKIE_NAME], getMeta(req));
     sessionResponse(res, session);
   } catch (err) {
-    clearRefreshCookie(res); // cookie inservible: se limpia en el navegador
+    if (err.code === 'SESSION_EXPIRED') clearRefreshCookie(res);
     throw err;
   }
 });

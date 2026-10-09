@@ -22,6 +22,7 @@ function errorHandler(err, req, res, next) {
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === 'P2002') { status = 409; code = 'CONFLICT'; message = 'El registro ya existe'; }
     else if (err.code === 'P2025') { status = 404; code = 'NOT_FOUND'; message = 'Registro no encontrado'; }
+    else if (err.code === 'P2023') { status = 400; code = 'INVALID_ID'; message = 'Identificador inválido'; }
   } else if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
     status = 401; code = 'INVALID_TOKEN'; message = 'Token inválido o expirado';
   }

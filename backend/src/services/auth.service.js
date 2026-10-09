@@ -84,8 +84,9 @@ async function refresh(rawToken, meta) {
         where: { adminId: stored.adminId, revokedAt: null },
         data: { revokedAt: new Date() },
       });
+      throw sessionExpired();
     }
-    throw sessionExpired();
+    throw new AppError('Refresco en curso, reintenta', 409, 'REFRESH_RACE');
   }
 
   if (stored.expiresAt <= new Date() || !stored.admin.isActive) throw sessionExpired();
@@ -96,7 +97,7 @@ async function refresh(rawToken, meta) {
       where: { id: stored.id, revokedAt: null },
       data: { revokedAt: new Date() },
     });
-    if (count !== 1) throw sessionExpired();
+    if (count !== 1) throw new AppError('Refresco en curso, reintenta', 409, 'REFRESH_RACE');
     return issueSession(stored.admin, meta, tx);
   });
 }
