@@ -59,4 +59,10 @@ const me = asyncHandler(async (req, res) => {
   res.json({ data: { user } });
 });
 
-module.exports = { login, refresh, logout, logoutAll, me };
+const changePassword = asyncHandler(async (req, res) => {
+  await authService.changePassword(req.user.id, req.body.currentPassword, req.body.newPassword);
+  clearRefreshCookie(res);
+  res.status(204).end();
+});
+
+module.exports = { login, refresh, logout, logoutAll, me, changePassword };

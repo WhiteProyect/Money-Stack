@@ -44,4 +44,14 @@ const bookingLimiter = rateLimit({
   handler: handler('Has enviado demasiadas solicitudes. Intenta más tarde.'),
 });
 
-module.exports = { globalLimiter, authLimiter, refreshLimiter, bookingLimiter };
+// Cambio de contraseña
+const passwordLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS,
+  limit: 5,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  handler: handler('Demasiados intentos. Intenta de nuevo más tarde.'),
+});
+
+module.exports = { globalLimiter, authLimiter, refreshLimiter, bookingLimiter, passwordLimiter };

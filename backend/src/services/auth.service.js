@@ -134,4 +134,38 @@ async function purgeExpiredTokens() {
   return count;
 }
 
-module.exports = { login, refresh, logout, logoutAll, getProfile, purgeExpiredTokens };
+async function changePassword(adminId, currentPassword, newPassword) {
+  const admin = await prisma.adminUser.findUnique({ where: { id: adminId } });
+  if (!admin) {
+    throw new AppError('Usuario no encontrado', 404, 'NOT_FOUND');
+  }
+
+  const isValid = await comparePassword(currentPassword, admin.passwordHash);
+  if (!isValid) {
+    throw new AppError('Contraseña actual incorrecta', 401, 'INVALID_CREDENTIALS');
+  }
+
+  const newHash = await hashPassword(newPassword);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.adminUser.update({
+      where: { id: adminId },
+      data: { passwordHash: newHash },
+    });
+
+    await tx.refreshToken.updateMany({
+      where: { adminId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+  });
+}
+
+module.exports = {
+  login,
+  refresh,
+  logout,
+  logoutAll,
+  getProfile,
+  purgeExpiredTokens,
+  changePassword,
+};
