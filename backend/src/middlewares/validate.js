@@ -13,7 +13,9 @@ const validate = (schema, source = 'body') => (req, res, next) => {
     }));
     return next(new AppError('Datos inválidos', 422, 'VALIDATION_ERROR', details));
   }
-  req[source] = result.data;
+  if (source !== 'params') {
+    req[source] = result.data;
+  }
   return next();
 };
 
