@@ -24,7 +24,7 @@ const update = asyncHandler(async (req, res) => {
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
-  await adminUserService.resetPassword(req.params.id, req.body.newPassword);
+  await adminUserService.resetPassword(req.user.id, req.params.id, req.body.newPassword);
   res.status(204).end();
 });
 

@@ -141,10 +141,14 @@ async function update(actorId, id, data) {
       }
       throw err;
     }
-  });
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 }
 
-async function resetPassword(id, newPassword) {
+async function resetPassword(actorId, id, newPassword) {
+  if (id === actorId) {
+    throw new AppError('Para cambiar tu propia contraseña usa el cambio de contraseña', 409, 'USE_CHANGE_PASSWORD');
+  }
+
   const target = await prisma.adminUser.findUnique({ where: { id } });
   if (!target) {
     throw new AppError('Administrador no encontrado', 404, 'ADMIN_NOT_FOUND');
