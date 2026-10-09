@@ -3,12 +3,24 @@
 const env = require('./config/env'); // valida el entorno antes de cualquier otra cosa
 const app = require('./app');
 const prisma = require('./lib/prisma');
+const authService = require('./services/auth.service');
 
 async function start() {
   await prisma.$connect();
   const server = app.listen(env.PORT, () => {
     console.log(`🚀 Money-Stack API en puerto ${env.PORT} [${env.NODE_ENV}]`);
   });
+
+  const purgeTokens = async () => {
+    try {
+      await authService.purgeExpiredTokens();
+    } catch (err) {
+      console.error('Error al purgar tokens expirados:', err);
+    }
+  };
+
+  purgeTokens();
+  setInterval(purgeTokens, 24 * 60 * 60 * 1000).unref();
 
   // Timeouts frente a conexiones lentas (slowloris)
   server.headersTimeout = 20_000;

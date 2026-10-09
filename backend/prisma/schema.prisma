@@ -129,6 +129,7 @@ model Event {
 
   @@index([status, startsAt])
   @@index([city])
+  @@index([createdById])
   @@map("events")
 }
 
@@ -180,6 +181,7 @@ model BookingRequest {
 
   @@index([status, createdAt])
   @@index([artistId])
+  @@index([handledById])
   @@index([eventDate])
   @@map("booking_requests")
 }
