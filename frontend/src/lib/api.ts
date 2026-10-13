@@ -12,16 +12,22 @@ import type { SessionUser } from './types';
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 const AUTH_BASE = `${API_URL}/api/v1/auth`;
 
+// Detalle de error de validación del backend: [{ field, message }].
+export interface ApiErrorDetail {
+  field: string;
+  message: string;
+}
+
 export class ApiError extends Error {
   status: number;
   code: string;
-  details?: Record<string, string[]>;
+  details?: ApiErrorDetail[];
 
   constructor(
     status: number,
     code: string,
     message: string,
-    details?: Record<string, string[]>
+    details?: ApiErrorDetail[]
   ) {
     super(message);
     this.name = 'ApiError';
@@ -215,6 +221,29 @@ export async function apiPatch<T>(path: string, data: unknown): Promise<T> {
     body: JSON.stringify(data),
   });
   return body.data;
+}
+
+// ── POST público (sin token): bookings y cualquier endpoint anónimo ─────────
+// Reintenta una sola vez ante REFRESH_RACE (409) por si una pestaña admin
+// está renovando tokens en paralelo; no lanza la sesión de admin por un 401.
+export async function publicPost<T>(path: string, data?: unknown): Promise<T> {
+  const doFetch = () =>
+    fetch(`${API_URL}/api/v1${path}`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: data === undefined ? undefined : JSON.stringify(data),
+    });
+
+  let res = await doFetch();
+  if (res.status === 409) {
+    await new Promise((r) => setTimeout(r, 400));
+    res = await doFetch();
+  }
+
+  const body = await readBody(res);
+  if (!res.ok) throw toApiError(res, body);
+  return body as T;
 }
 
 // ── Sesión ────────────────────────────────────────────────────────────────────
