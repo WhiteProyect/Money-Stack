@@ -1,0 +1,52 @@
+'use strict';
+
+const { Router } = require('express');
+const controller = require('../controllers/event.controller');
+const validate = require('../middlewares/validate');
+const authenticate = require('../middlewares/authenticate');
+const authorize = require('../middlewares/authorize');
+const noStore = require('../middlewares/noStore');
+const {
+  listEventsQuerySchema,
+  eventSlugParamSchema,
+  eventIdParamSchema,
+  createEventSchema,
+  updateEventSchema,
+  lineupRequestSchema,
+} = require('../validators/event.validator');
+
+const router = Router();
+
+// ── Público ──────────────────────────────────────────────────────────────────
+router.get('/events', validate(listEventsQuerySchema, 'query'), controller.list);
+router.get('/events/:slug', validate(eventSlugParamSchema, 'params'), controller.getBySlug);
+
+// ── Admin (EDITOR+) ───────────────────────────────────────────────────────────
+const adminRouter = Router();
+adminRouter.use(noStore, authenticate, authorize('EDITOR'));
+
+adminRouter.get('/', controller.list);
+adminRouter.post('/', validate(createEventSchema), controller.create);
+adminRouter.get('/:id', validate(eventIdParamSchema, 'params'), controller.getById);
+adminRouter.patch(
+  '/:id',
+  validate(eventIdParamSchema, 'params'),
+  validate(updateEventSchema),
+  controller.update
+);
+adminRouter.put(
+  '/:id/lineup',
+  validate(eventIdParamSchema, 'params'),
+  validate(lineupRequestSchema),
+  controller.setLineup
+);
+adminRouter.delete('/:id', (req, res, next) => {
+  const err = new Error('No se permite eliminar eventos. Úsalos cancelando con status');
+  err.statusCode = 405;
+  err.code = 'METHOD_NOT_ALLOWED';
+  next(err);
+});
+
+router.use('/admin/events', adminRouter);
+
+module.exports = router;
