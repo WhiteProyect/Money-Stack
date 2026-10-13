@@ -132,7 +132,11 @@
       brightness(var(--nightvision-light, 1.2));
   }
 
-  /* Grano (ruido) — solo si no hay reduced-motion */
+  /* Grano (ruido) */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
   .grain::before {
     content: '';
     position: absolute;
@@ -144,15 +148,15 @@
     z-index: 1;
   }
 
-  /* Líneas de escaneo */
-  .scanlines::after {
+  /* Líneas de escaneo — usa ::before para convivir con ::after de .vignette */
+  .scanlines::before {
     content: '';
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(
       0deg,
-      rgba(0, 0, 0, 0.25) 0px,
-      rgba(0, 0, 0, 0.25) 1px,
+      rgba(0, 0, 0, 0.28) 0px,
+      rgba(0, 0, 0, 0.28) 1px,
       transparent 1px,
       transparent 3px
     );
@@ -161,13 +165,13 @@
     z-index: 2;
   }
 
-  /* Viñeta */
+  /* Viñeta — usa ::after con degradado suave hacia los bordes */
   .vignette::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.9) 100%);
-    opacity: var(--vignette-opacity, 0.55);
+    background: radial-gradient(ellipse at center, transparent 65%, rgba(5, 6, 10, 0.65) 100%);
+    opacity: var(--vignette-opacity, 0.5);
     pointer-events: none;
     z-index: 3;
   }
@@ -181,6 +185,19 @@
       transition: transform 0.35s ease-out;
     }
   }
+
+  /* Marcos visor tácticos */
+  .visor-bracket {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--color-accent);
+    pointer-events: none;
+  }
+  .visor-bracket-tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
+  .visor-bracket-tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; }
+  .visor-bracket-bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; }
+  .visor-bracket-br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
 }
 
 /* ── Ajuste de contraste para modo reduced-motion ── */
@@ -188,11 +205,15 @@
   html {
     scroll-behavior: auto;
   }
+  .grain,
   .grain::before,
+  .scanlines::before,
   .scanlines::after,
+  .vignette::before,
   .vignette::after,
   .fx-overlay {
     opacity: 0 !important;
+    background-image: none !important;
   }
 }
 
@@ -200,11 +221,15 @@
    <html class="fx-off"> apaga overlays (grano/scanlines/viñeta),
    night vision y parallax. Los componentes de efectos también lo leen
    antes de montarse para no animar. */
+html.fx-off .grain,
 html.fx-off .grain::before,
+html.fx-off .scanlines::before,
 html.fx-off .scanlines::after,
+html.fx-off .vignette::before,
 html.fx-off .vignette::after,
 html.fx-off .fx-overlay {
   opacity: 0 !important;
+  background-image: none !important;
 }
 html.fx-off .night-vision {
   filter: none !important;

@@ -28,7 +28,7 @@ export default function NightVisionOverlay() {
         className="absolute inset-0 opacity-[var(--vignette-opacity)]"
         style={{
           background:
-            'radial-gradient(circle at center, transparent 55%, rgba(0,0,0,0.9) 100%)',
+            'radial-gradient(ellipse at center, transparent 65%, rgba(5,6,10,0.65) 100%)',
         }}
       />
     </div>
