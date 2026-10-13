@@ -47,6 +47,19 @@ function bookingPublicShape(b) {
   };
 }
 
+// Shape admin: agrega campos internos que NUNCA van en respuestas públicas
+// (notas internas y quién atendió la solicitud).
+function bookingAdminShape(b) {
+  return {
+    ...bookingPublicShape(b),
+    adminNotes: b.adminNotes ?? null,
+    handledBy: b.handledBy
+      ? { id: b.handledBy.id, name: b.handledBy.name }
+      : null,
+    handledById: b.handledById ?? null,
+  };
+}
+
 // Público: crear booking. El honeypot se descarta, consentData debe ser true,
 // eventDate futura, mensaje 20..2000, se guarda la IP.
 async function createPublic(data, ip) {
@@ -133,12 +146,13 @@ async function listAdmin(query = {}) {
       take,
       include: {
         artist: { select: { id: true, name: true, slug: true } },
+        handledBy: { select: { id: true, name: true } },
       },
     }),
     prisma.bookingRequest.count({ where }),
   ]);
 
-  const data = raw.map((b) => bookingPublicShape(b));
+  const data = raw.map((b) => bookingAdminShape(b));
   return buildPaginated(data, total, { page, limit });
 }
 
@@ -155,7 +169,7 @@ async function getById(id) {
     throw new AppError('Solicitud de booking no encontrada', 404, 'BOOKING_NOT_FOUND');
   }
 
-  return bookingPublicShape(booking);
+  return bookingAdminShape(booking);
 }
 
 async function update(id, data, adminId) {
@@ -203,7 +217,7 @@ async function update(id, data, adminId) {
     },
   });
 
-  return bookingPublicShape(updated);
+  return bookingAdminShape(updated);
 }
 
 module.exports = {

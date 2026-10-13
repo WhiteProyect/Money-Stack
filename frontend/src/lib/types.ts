@@ -99,4 +99,8 @@ export interface Booking {
   status: BookingStatus;
   createdAt: string;
   updatedAt: string;
+  // Solo en respuestas admin (GET/PATCH /admin/bookings):
+  adminNotes?: string | null;
+  handledById?: string | null;
+  handledBy?: { id: string; name: string } | null;
 }

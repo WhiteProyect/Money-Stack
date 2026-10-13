@@ -223,6 +223,14 @@ export async function apiPatch<T>(path: string, data: unknown): Promise<T> {
   return body.data;
 }
 
+export async function apiPut<T>(path: string, data: unknown): Promise<T> {
+  const body = await request<{ data: T }>(path, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return body.data;
+}
+
 // ── POST público (sin token): bookings y cualquier endpoint anónimo ─────────
 // Reintenta una sola vez ante REFRESH_RACE (409) por si una pestaña admin
 // está renovando tokens en paralelo; no lanza la sesión de admin por un 401.
