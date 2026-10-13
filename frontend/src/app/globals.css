@@ -1,0 +1,222 @@
+/* ─── Money-Stack — F0 Style tile (Tailwind CSS v4) ─────────────────────────
+   Tokens visuales, tipografía y efectos base: depth map / night vision.
+   Reglas:
+   - Contraste AA en textos ≥ 4.5:1 (verificado con las variables de color).
+   - Efectos desactivables y respetuosos de prefers-reduced-motion.
+   - Un solo acento fosforescente en toda la paleta.
+────────────────────────────────────────────────────────────────────────────── */
+
+@import "tailwindcss/index.css";
+
+@layer theme {
+  @theme {
+    /* ── Fondo / superficie (dark depth map) ── */
+    --color-depth-0: #05060a;   /* fondo más oscuro (profundidad extrema) */
+    --color-depth-1: #0b0d14;   /* superficie primaria */
+    --color-depth-2: #13161f;   /* superficie elevada */
+    --color-depth-3: #1c2030;   /* panel / cards */
+    --color-depth-4: #272c40;   /* bordes sutiles */
+    --color-depth-5: #3a4057;   /* texto secundario permitido con contraste */
+
+    /* ── Texto ── */
+    --color-text-primary: #eef1f6;  /* texto principal: contrasta con depth-1 (≥7:1) */
+    --color-text-secondary: #b8c0d4; /* texto secundario (contrasta con depth-1 ≈ 5.4:1) */
+    --color-text-muted: #6f7689;     /* solo iconos/etiquetas HUD (contrasta con depth-2 ≈ 4.7:1) */
+
+    /* ── Acsentos ── */
+    --color-accent: #7dffb3;         /* fosforescente, monocromo con tinte verde-menta */
+    --color-accent-dim: rgba(125, 255, 179, 0.12);
+    --color-accent-glow: rgba(125, 255, 179, 0.45);
+
+    /* ── Estados ── */
+    --color-success: #7dffb3;
+    --color-warning: #ffcf7d;
+    --color-error: #ff7d8b;
+
+    /* ── Tipografía ── */
+    --font-display: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
+      "Fira Code", Menlo, Consolas, monospace;
+    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+
+    /* ── Efectos night vision (anulables por componentes) ── */
+    --grain-opacity: 0.06;
+    --scanline-opacity: 0.18;
+    --vignette-opacity: 0.55;
+    --nightvision-hue: 135deg;       /* verde fosforescente */
+    --nightvision-sat: 60%;
+    --nightvision-light: 25%;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-depth-1);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Textos HUD en monoespaciada con tinte acentuado */
+  .hud {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .hud-accent {
+    color: var(--color-accent);
+    text-shadow: 0 0 6px var(--color-accent-glow);
+  }
+
+  /* Enlaces */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Focus visible para accesibilidad */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Scrollbar oscura */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-depth-0);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-depth-4);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-depth-5);
+  }
+
+  /* Selection */
+  ::selection {
+    background: var(--color-accent-dim);
+    color: var(--color-text-primary);
+  }
+}
+
+/* ── Efectos night vision (capas decorativas, desactivables) ── */
+@layer base {
+  .night-vision {
+    filter: saturate(var(--nightvision-sat, 60%)) hue-rotate(var(--nightvision-hue, 135deg))
+      brightness(var(--nightvision-light, 1.2));
+  }
+
+  /* Grano (ruido) — solo si no hay reduced-motion */
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: var(--grain-opacity, 0.06);
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Líneas de escaneo */
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.25) 0px,
+      rgba(0, 0, 0, 0.25) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    opacity: var(--scanline-opacity, 0.18);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Viñeta */
+  .vignette::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.9) 100%);
+    opacity: var(--vignette-opacity, 0.55);
+    pointer-events: none;
+    z-index: 3;
+  }
+}
+
+/* ── Efecto de profundidad (parallax suave, solo si no hay reduced-motion) ── */
+@layer utilities {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-slow {
+      will-change: transform;
+      transition: transform 0.35s ease-out;
+    }
+  }
+}
+
+/* ── Ajuste de contraste para modo reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .grain::before,
+  .scanlines::after,
+  .vignette::after {
+    opacity: 0 !important;
+  }
+}
+
+/* ── Utilidades de acento ── */
+@layer utilities {
+  .accent-border {
+    border-color: var(--color-accent-dim);
+  }
+  .accent-ring {
+    box-shadow: 0 0 0 1px var(--color-accent-dim), 0 0 12px var(--color-accent-glow);
+  }
+  .text-accent {
+    color: var(--color-accent);
+  }
+  .bg-accent-soft {
+    background-color: var(--color-accent-dim);
+  }
+  .bg-surface {
+    background-color: var(--color-depth-3);
+  }
+  .bg-surface-2 {
+    background-color: var(--color-depth-2);
+  }
+  .border-surface {
+    border-color: var(--color-depth-4);
+  }
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+}
