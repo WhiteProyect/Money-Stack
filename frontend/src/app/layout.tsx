@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SessionProvider } from '@/lib/session';
+import { QueryProvider } from '@/lib/query-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -51,7 +52,9 @@ export default function RootLayout({
               "try{var k='ms:fx',s=localStorage.getItem(k),r=matchMedia('(prefers-reduced-motion: reduce)').matches,e=s==='1'||(s===null&&!r);document.documentElement.classList.toggle('fx-off',!e)}catch(e){}",
           }}
         />
-        <SessionProvider>{children}</SessionProvider>
+        <QueryProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </QueryProvider>
       </body>
     </html>
   );
