@@ -38,6 +38,11 @@ export default function SiteFooter() {
                 El sello
               </Link>
             </li>
+            <li>
+              <Link href="/style-tile" className="hover:text-[var(--accent)]">
+                Style Tile (F0)
+              </Link>
+            </li>
           </ul>
         </nav>
 
