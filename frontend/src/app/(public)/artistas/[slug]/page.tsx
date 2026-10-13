@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import EventCard from '@/components/event-card';
+import JsonLd from '@/components/json-ld';
 import { ApiUnavailable } from '@/components/api-states';
 import { serverGet, serverGetList, ServerApiError, qs } from '@/lib/server-api';
+import { musicGroupJsonLd } from '@/lib/jsonld';
 import type { Artist, EventItem, SocialLinkKey } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -61,6 +63,8 @@ export default async function ArtistPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
+      <JsonLd data={musicGroupJsonLd(artist)} />
+
       <nav aria-label="Migas de pan" className="hud text-xs">
         <Link href="/artistas" className="transition-colors hover:text-[var(--accent)]">
           Artistas

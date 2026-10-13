@@ -2,8 +2,10 @@ import Link from 'next/link';
 import ArtistCard from '@/components/artist-card';
 import EventCard from '@/components/event-card';
 import DepthHeroLazy from '@/components/depth-hero-lazy';
+import JsonLd from '@/components/json-ld';
 import { ApiUnavailable, EmptyState } from '@/components/api-states';
 import { serverGetList } from '@/lib/server-api';
+import { ORGANIZATION_JSONLD } from '@/lib/jsonld';
 import type { Artist, EventItem } from '@/lib/types';
 
 // Datos reales desde la API: renderizado dinámico en cada petición.
@@ -28,6 +30,8 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
+      <JsonLd data={ORGANIZATION_JSONLD} />
+
       {/* Hero */}
       <section className="relative overflow-hidden rounded-2xl border border-[var(--depth-4)] bg-[var(--depth-2)] px-6 py-16 text-center shadow-2xl">
         <DepthHeroLazy />

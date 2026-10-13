@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import JsonLd from '@/components/json-ld';
 import { ApiUnavailable } from '@/components/api-states';
 import { serverGet, serverGetList, qs, ServerApiError } from '@/lib/server-api';
+import { musicEventJsonLd } from '@/lib/jsonld';
 import { formatDateRange, formatDate, formatPrice } from '@/lib/format';
 import type { EventItem } from '@/lib/types';
 
@@ -67,6 +69,8 @@ export default async function EventPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10">
+      <JsonLd data={musicEventJsonLd(event)} />
+
       <nav aria-label="Migas de pan" className="hud text-xs">
         <Link href="/eventos" className="transition-colors hover:text-[var(--accent)]">
           Eventos

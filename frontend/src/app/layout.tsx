@@ -16,6 +16,16 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'es_CO',
     siteName: 'Money-Stack',
+    title: 'Money-Stack — Sello discográfico desde Caucasia',
+    description:
+      'Sello discográfico independiente desde Caucasia, Antioquia. Catálogo de artistas, agenda de eventos y sistema de bookings musicales.',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Money-Stack — Sello discográfico desde Caucasia',
+    description:
+      'Sello discográfico independiente desde Caucasia, Antioquia. Catálogo de artistas, agenda de eventos y sistema de bookings musicales.',
   },
   icons: {
     icon: [
