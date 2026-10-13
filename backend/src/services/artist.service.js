@@ -36,9 +36,18 @@ async function uniqueSlug(base) {
   }
 }
 
-async function listPublic(query = {}) {
+async function listPublic(query = {}, options = {}) {
   const { page, limit, genre, featured, search } = query;
-  const where = { isActive: true };
+  const admin = options.admin === true;
+
+  // Base: el público solo ve activos; el admin puede ver y filtrar ambos.
+  const where = {};
+  if (admin) {
+    if (query.isActive === true) where.isActive = true;
+    else if (query.isActive === false) where.isActive = false;
+  } else {
+    where.isActive = true;
+  }
 
   if (genre) {
     where.genres = { hasSome: [genre.trim()] };

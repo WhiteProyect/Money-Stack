@@ -43,11 +43,18 @@ async function nextOrder(eventId) {
   return (last ? last.order + 1 : 0);
 }
 
-async function listPublic(query = {}) {
+async function listPublic(query = {}, options = {}) {
   const { page, limit, upcoming, past, city, artistSlug } = query;
+  const admin = options.admin === true;
 
-  // Filtro base: publicados.
-  const where = { status: 'PUBLISHED' };
+  // Base: el público solo ve PUBLISHED; el admin ve todos los estados
+  // (y puede filtrar con ?status=).
+  const where = {};
+  if (admin) {
+    if (query.status) where.status = query.status;
+  } else {
+    where.status = 'PUBLISHED';
+  }
 
   // Filtro temporal desde startsAt
   const now = new Date();

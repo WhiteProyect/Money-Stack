@@ -137,6 +137,11 @@ const listEventsQuerySchema = z
   })
   .strict();
 
+// Admin: filtros del público + estado (ver borradores/cancelados).
+const listAdminEventsQuerySchema = listEventsQuerySchema.extend({
+  status: z.enum(['DRAFT', 'PUBLISHED', 'CANCELLED', 'FINISHED']).optional(),
+});
+
 const eventIdParamSchema = z
   .object({
     id: z.string().uuid('ID inválido'),
@@ -158,6 +163,7 @@ module.exports = {
   lineupSchema,
   lineupRequestSchema,
   listEventsQuerySchema,
+  listAdminEventsQuerySchema,
   eventIdParamSchema,
   eventSlugParamSchema,
 };

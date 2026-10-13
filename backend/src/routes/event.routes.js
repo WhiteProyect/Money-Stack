@@ -8,6 +8,7 @@ const authorize = require('../middlewares/authorize');
 const noStore = require('../middlewares/noStore');
 const {
   listEventsQuerySchema,
+  listAdminEventsQuerySchema,
   eventSlugParamSchema,
   eventIdParamSchema,
   createEventSchema,
@@ -25,7 +26,7 @@ router.get('/events/:slug', validate(eventSlugParamSchema, 'params'), controller
 const adminRouter = Router();
 adminRouter.use(noStore, authenticate, authorize('EDITOR'));
 
-adminRouter.get('/', controller.list);
+adminRouter.get('/', validate(listAdminEventsQuerySchema, 'query'), controller.listAdmin);
 adminRouter.post('/', validate(createEventSchema), controller.create);
 adminRouter.get('/:id', validate(eventIdParamSchema, 'params'), controller.getById);
 adminRouter.patch(

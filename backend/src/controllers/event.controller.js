@@ -8,6 +8,12 @@ const list = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
+// Admin (EDITOR+): sin forzar status=PUBLISHED y con filtro ?status=.
+const listAdmin = asyncHandler(async (req, res) => {
+  const result = await eventService.listPublic(req.query, { admin: true });
+  res.json(result);
+});
+
 const getBySlug = asyncHandler(async (req, res) => {
   const event = await eventService.getBySlug(req.params.slug);
   res.json({ data: event });
@@ -35,6 +41,7 @@ const setLineup = asyncHandler(async (req, res) => {
 
 module.exports = {
   list,
+  listAdmin,
   getBySlug,
   getById,
   create,

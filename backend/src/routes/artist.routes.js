@@ -8,6 +8,7 @@ const authorize = require('../middlewares/authorize');
 const noStore = require('../middlewares/noStore');
 const {
   listArtistsQuerySchema,
+  listAdminArtistsQuerySchema,
   artistSlugParamSchema,
   artistIdParamSchema,
   createArtistSchema,
@@ -32,7 +33,7 @@ router.get(
 const adminRouter = Router();
 adminRouter.use(noStore, authenticate, authorize('EDITOR'));
 
-adminRouter.get('/', controller.list);
+adminRouter.get('/', validate(listAdminArtistsQuerySchema, 'query'), controller.listAdmin);
 adminRouter.post('/', validate(createArtistSchema), controller.create);
 adminRouter.get('/:id', validate(artistIdParamSchema, 'params'), controller.getById);
 adminRouter.patch(

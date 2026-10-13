@@ -95,6 +95,23 @@ const listArtistsQuerySchema = z
   })
   .strict();
 
+// Admin: incluye el filtro isActive (ver inactivos/reactivar) y los campos
+// internos que el público nunca ve.
+const listAdminArtistsQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    genre: z.string().trim().max(60).optional(),
+    featured: z
+      .union([z.boolean(), z.enum(['true', 'false']).transform((v) => v === 'true')])
+      .optional(),
+    search: z.string().trim().max(120).optional(),
+    isActive: z
+      .union([z.boolean(), z.enum(['true', 'false']).transform((v) => v === 'true')])
+      .optional(),
+  })
+  .strict();
+
 // Admin: detalle por ID.
 const artistIdParamSchema = z
   .object({
@@ -116,6 +133,7 @@ module.exports = {
   createArtistSchema,
   updateArtistSchema,
   listArtistsQuerySchema,
+  listAdminArtistsQuerySchema,
   artistIdParamSchema,
   artistSlugParamSchema,
   artistPublicStub,
