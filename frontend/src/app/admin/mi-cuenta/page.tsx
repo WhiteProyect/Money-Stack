@@ -5,7 +5,7 @@
 // muestran si el backend responde VALIDATION_ERROR.
 
 import { useState } from 'react';
-import { changePassword, logout, ApiError } from '@/lib/api';
+import { changePassword, logoutAll, ApiError } from '@/lib/api';
 import { useSession } from '@/lib/session';
 import { useRouter } from 'next/navigation';
 
@@ -32,6 +32,12 @@ export default function MyAccountPage() {
 
     if (next !== confirm) {
       setFieldErrors({ confirm: 'Las contraseñas no coinciden.' });
+      return;
+    }
+    if (next.length < 12 || !/[a-z]/.test(next) || !/[A-Z]/.test(next) || !/\d/.test(next)) {
+      setFieldErrors({
+        newPassword: 'Mínimo 12 caracteres, con mayúscula, minúscula y número.',
+      });
       return;
     }
 
@@ -67,10 +73,10 @@ export default function MyAccountPage() {
     if (!window.confirm('Esto cerrará la sesión en TODOS los dispositivos. ¿Continuar?'))
       return;
     try {
-      await logout();
+      await logoutAll();
       router.replace('/admin/login');
     } catch {
-      // logout siempre limpia la sesión local
+      // logoutAll siempre limpia la sesión local, incluso si la API falla
       router.replace('/admin/login');
     }
   }
@@ -137,12 +143,15 @@ export default function MyAccountPage() {
             type="password"
             autoComplete="new-password"
             required
-            minLength={10}
+            minLength={12}
             value={next}
             onChange={(e) => setNext(e.target.value)}
             aria-invalid={Boolean(fieldErrors.newPassword)}
             className={inputCls}
           />
+          <p className="text-xs text-[var(--text-muted)]">
+            Mínimo 12 caracteres, con mayúscula, minúscula y número.
+          </p>
           {fieldErrors.newPassword && (
             <p role="alert" className="text-xs text-[var(--color-error,#ff7d8b)]">
               {fieldErrors.newPassword}

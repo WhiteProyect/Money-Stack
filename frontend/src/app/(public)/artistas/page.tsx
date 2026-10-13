@@ -47,7 +47,7 @@ export default async function ArtistsPage({ searchParams }: Props) {
   const activeFilters = { genre: sp.genre, featured: sp.featured, search: sp.search };
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <header>
         <p className="hud text-xs">Catálogo</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
@@ -147,7 +147,7 @@ export default async function ArtistsPage({ searchParams }: Props) {
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 

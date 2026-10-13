@@ -7,9 +7,12 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { apiGetList, ApiError } from '@/lib/api';
 import { formatDate } from '@/lib/format';
+import { useSession } from '@/lib/session';
 import type { Booking, EventItem } from '@/lib/types';
 
 export default function AdminDashboardPage() {
+  const { user } = useSession();
+  const canSeeBookings = user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN';
   const [pending, setPending] = useState<Booking[] | null>(null);
   const [upcoming, setUpcoming] = useState<EventItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -22,11 +25,10 @@ export default function AdminDashboardPage() {
       setLoading(true);
       setError(null);
 
-      const canSeeBookings = true; // el backend filtra por rol (ADMIN+)
       const [bookingsRes, eventsRes] = await Promise.allSettled([
         canSeeBookings
           ? apiGetList<Booking>('/admin/bookings?status=PENDING&limit=5')
-          : Promise.resolve({ data: [] as Booking[], pagination: null }),
+          : Promise.resolve({ data: null as Booking[] | null, pagination: null }),
         apiGetList<EventItem>('/admin/events?upcoming=true&limit=5'),
       ]);
 
@@ -34,7 +36,7 @@ export default function AdminDashboardPage() {
 
       if (bookingsRes.status === 'fulfilled') setPending(bookingsRes.value.data);
       else if (bookingsRes.reason instanceof ApiError && bookingsRes.reason.status === 403)
-        setPending([]); // EDITOR no ve bookings
+        setPending(null); // sin permiso (403): se muestra aviso, no "0 solicitudes"
       else setError('No se pudieron cargar los bookings pendientes.');
 
       if (eventsRes.status === 'fulfilled') setUpcoming(eventsRes.value.data);
@@ -47,7 +49,7 @@ export default function AdminDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [canSeeBookings]);
 
   return (
     <div>
@@ -78,7 +80,9 @@ export default function AdminDashboardPage() {
               Cargando…
             </p>
           ) : pending === null ? (
-            <p className="mt-4 text-sm text-[var(--text-muted)]">Sin acceso o sin datos.</p>
+            <p className="mt-4 text-sm text-[var(--text-muted)]">
+              No tienes permiso para ver las solicitudes de booking.
+            </p>
           ) : pending.length === 0 ? (
             <p className="mt-4 text-sm text-[var(--text-secondary)]">No hay solicitudes pendientes. 🎉</p>
           ) : (

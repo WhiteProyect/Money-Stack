@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login, ApiError } from '@/lib/api';
+import { login, ApiError, describeApiError } from '@/lib/api';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
             ? 'Correo o contraseña incorrectos.'
             : err.code === 'ACCOUNT_LOCKED'
               ? 'Cuenta bloqueada por intentos fallidos. Contacta al super admin.'
-              : err.message
+              : describeApiError(err, 'No se pudo iniciar sesión.')
         );
       } else {
         setError('No se pudo iniciar sesión. Intenta de nuevo.');

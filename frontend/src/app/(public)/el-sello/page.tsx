@@ -28,7 +28,7 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <header className="max-w-3xl">
         <p className="hud hud-accent text-sm">El sello</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] md:text-4xl">
@@ -88,6 +88,6 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

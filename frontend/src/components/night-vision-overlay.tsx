@@ -8,7 +8,7 @@ export default function NightVisionOverlay() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-50 overflow-hidden"
+      className="fx-overlay pointer-events-none fixed inset-0 z-50 overflow-hidden"
     >
       {/* Grano */}
       <div

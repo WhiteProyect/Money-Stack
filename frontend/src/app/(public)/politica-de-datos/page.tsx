@@ -43,7 +43,7 @@ const SECTIONS = [
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-4 py-10">
       <header>
         <p className="hud text-xs">Legal</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
@@ -64,6 +64,6 @@ export default function PrivacyPage() {
           </section>
         ))}
       </div>
-    </main>
+    </div>
   );
 }

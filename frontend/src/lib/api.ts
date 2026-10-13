@@ -37,6 +37,15 @@ export class ApiError extends Error {
   }
 }
 
+// Mensaje legible de un error de API, incluyendo los errores por campo si existen.
+export function describeApiError(err: unknown, fallback: string): string {
+  if (!(err instanceof ApiError)) return fallback;
+  if (err.details?.length) {
+    return err.details.map((d) => d.message).join(' · ');
+  }
+  return err.message;
+}
+
 export type SessionStatus = 'loading' | 'authed' | 'guest';
 
 export interface SessionState {
@@ -72,18 +81,42 @@ export function subscribeSession(fn: () => void): () => void {
   };
 }
 
+// Marca NO sensible (no es un token): indica que este navegador tuvo sesión de admin.
+// Sin ella no se llama a /auth/refresh en visitas públicas (evita 401 que cuentan
+// contra el límite de refresh por IP y pueden bloquear a los admins).
+const SESSION_HINT_KEY = 'ms:hasSession';
+
+function setSessionHint(on: boolean) {
+  try {
+    if (on) localStorage.setItem(SESSION_HINT_KEY, '1');
+    else localStorage.removeItem(SESSION_HINT_KEY);
+  } catch {
+    /* almacenamiento no disponible */
+  }
+}
+
+function hasSessionHint(): boolean {
+  try {
+    return localStorage.getItem(SESSION_HINT_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 function applySession(data: {
   accessToken: string;
   expiresIn: number;
   user: SessionUser;
 }) {
   accessToken = data.accessToken;
+  setSessionHint(true);
   scheduleRefresh(data.expiresIn);
   setSession({ user: data.user, status: 'authed' });
 }
 
 function clearSession() {
   accessToken = null;
+  setSessionHint(false);
   if (refreshTimer) {
     clearTimeout(refreshTimer);
     refreshTimer = null;
@@ -164,7 +197,17 @@ function doRefresh(): Promise<boolean> {
 // Restaura la sesión al cargar la app usando la cookie de refresh.
 export async function restoreSession(): Promise<void> {
   if (sessionState.status !== 'loading') return;
+  if (!hasSessionHint()) {
+    // Visitante público: no hay nada que refrescar.
+    setSession({ user: null, status: 'guest' });
+    return;
+  }
   await doRefresh();
+  // Fallo de red o carrera sin resolver: no dejar el panel en "Verificando sesión…".
+  // Se pasa a invitado SIN borrar la marca, para que un reintento (recarga) pueda restaurar.
+  if (sessionState.status === 'loading') {
+    setSession({ user: null, status: 'guest' });
+  }
 }
 
 // ── Requests autenticados ─────────────────────────────────────────────────────

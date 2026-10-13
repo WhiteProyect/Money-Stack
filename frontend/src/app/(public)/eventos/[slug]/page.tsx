@@ -18,11 +18,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {
     const event = await serverGet<EventItem>(`/events/${encodeURIComponent(slug)}`);
+    const description =
+      event.description?.slice(0, 155) ??
+      `${event.title} — ${formatDate(event.startsAt)} en ${event.venueName}, ${event.city ?? 'Caucasia'}.`;
+    const image = event.coverUrl ?? undefined;
     return {
       title: event.title,
-      description:
-        event.description?.slice(0, 155) ??
-        `${event.title} — ${formatDate(event.startsAt)} en ${event.venueName}, ${event.city ?? 'Caucasia'}.`,
+      description,
+      alternates: { canonical: `/eventos/${event.slug}` },
+      openGraph: {
+        type: 'website',
+        title: event.title,
+        description,
+        url: `/eventos/${event.slug}`,
+        ...(image ? { images: [{ url: image, alt: event.title }] } : {}),
+      },
+      twitter: {
+        card: image ? 'summary_large_image' : 'summary',
+        title: event.title,
+        description,
+        ...(image ? { images: [image] } : {}),
+      },
     };
   } catch {
     return { title: 'Evento' };
@@ -68,7 +84,7 @@ export default async function EventPage({ params }: Props) {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <JsonLd data={musicEventJsonLd(event)} />
 
       <nav aria-label="Migas de pan" className="hud text-xs">
@@ -230,6 +246,6 @@ export default async function EventPage({ params }: Props) {
       )}
 
       {related === null && headliner && <ApiUnavailable />}
-    </main>
+    </div>
   );
 }

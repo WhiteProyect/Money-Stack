@@ -41,7 +41,7 @@ export default async function BookingPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10">
+    <div className="mx-auto max-w-4xl px-4 py-10">
       <header className="max-w-2xl">
         <p className="hud hud-accent text-sm">Contratación</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] md:text-4xl">
@@ -73,6 +73,6 @@ export default async function BookingPage({ searchParams }: Props) {
           />
         )}
       </section>
-    </main>
+    </div>
   );
 }

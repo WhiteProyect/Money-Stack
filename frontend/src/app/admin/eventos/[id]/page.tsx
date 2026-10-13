@@ -27,13 +27,28 @@ interface LineupEntry {
   isHeadliner: boolean;
 }
 
-// datetime-local <-> ISO (el backend acepta ISO; el input usa datetime-local).
+// datetime-local <-> ISO, siempre en hora de Colombia (UTC-5), sin depender de la
+// zona del navegador.
+const bogotaParts = new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'America/Bogota',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+});
+
 function toLocalInput(iso: string | null | undefined): string {
   if (!iso) return '';
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '';
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return bogotaParts.format(d).replace(' ', 'T'); // YYYY-MM-DDTHH:mm
+}
+
+function fromLocalInput(value: string): string | null {
+  const d = new Date(`${value}:00-05:00`);
+  return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
 export default function AdminEventFormPage() {
@@ -123,19 +138,35 @@ export default function AdminEventFormPage() {
     setFieldErrors({});
     setSaved(false);
 
+    const startsAtIso = form.startsAt ? fromLocalInput(form.startsAt) : null;
+    if (!startsAtIso) {
+      setFieldErrors({ startsAt: 'La fecha y hora de inicio es obligatoria.' });
+      setError('Revisa los campos marcados.');
+      setSaving(false);
+      return;
+    }
+    const endsAtIso = form.endsAt ? fromLocalInput(form.endsAt) : null;
+    if (form.endsAt && !endsAtIso) {
+      setFieldErrors({ endsAt: 'La fecha de fin no es válida.' });
+      setError('Revisa los campos marcados.');
+      setSaving(false);
+      return;
+    }
+
     const payload: Record<string, unknown> = {
       title: form.title.trim(),
       description: form.description.trim() || null,
       venueName: form.venueName.trim(),
       address: form.address.trim() || null,
       city: form.city.trim() || null,
-      startsAt: new Date(form.startsAt).toISOString(),
+      startsAt: startsAtIso,
       coverUrl: form.coverUrl.trim() || null,
       ticketUrl: form.ticketUrl.trim() || null,
       status: form.status,
     };
-    if (form.endsAt) payload.endsAt = new Date(form.endsAt).toISOString();
-    if (form.price.trim() !== '') payload.price = Number(form.price);
+    if (endsAtIso) payload.endsAt = endsAtIso;
+    // El backend interpreta "50.000" como cincuenta mil.
+    if (form.price.trim() !== '') payload.price = form.price.trim();
     if (form.capacity.trim() !== '') payload.capacity = Number(form.capacity);
 
     try {

@@ -7,6 +7,8 @@
 ────────────────────────────────────────────────────────────────────────────── */
 
 @import "tailwindcss/index.css";
+/* Variables --accent, --depth-*, --text-* usadas por los componentes */
+@import "../styles/tokens.css";
 
 @layer theme {
   @theme {
@@ -21,7 +23,7 @@
     /* ── Texto ── */
     --color-text-primary: #eef1f6;  /* texto principal: contrasta con depth-1 (≥7:1) */
     --color-text-secondary: #b8c0d4; /* texto secundario (contrasta con depth-1 ≈ 5.4:1) */
-    --color-text-muted: #6f7689;     /* solo iconos/etiquetas HUD (contrasta con depth-2 ≈ 4.7:1) */
+    --color-text-muted: #8a92a6;     /* etiquetas/ayudas (contraste ≥ 5:1 sobre depth-1..3) */
 
     /* ── Acsentos ── */
     --color-accent: #7dffb3;         /* fosforescente, monocromo con tinte verde-menta */
@@ -188,7 +190,8 @@
   }
   .grain::before,
   .scanlines::after,
-  .vignette::after {
+  .vignette::after,
+  .fx-overlay {
     opacity: 0 !important;
   }
 }

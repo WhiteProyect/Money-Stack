@@ -57,7 +57,7 @@ export default async function EventsPage({ searchParams }: Props) {
   ];
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <header>
         <p className="hud text-xs">Agenda</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
@@ -150,6 +150,6 @@ export default async function EventsPage({ searchParams }: Props) {
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }

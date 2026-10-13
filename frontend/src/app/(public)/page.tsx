@@ -29,7 +29,7 @@ export default async function HomePage() {
   const events = eventsResult.status === 'fulfilled' ? eventsResult.value.data : null;
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <JsonLd data={ORGANIZATION_JSONLD} />
 
       {/* Hero */}
@@ -148,6 +148,6 @@ export default async function HomePage() {
           </svg>
         </Link>
       </section>
-    </main>
+    </div>
   );
 }

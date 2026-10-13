@@ -4,7 +4,7 @@
 // rol/estado, reset de contraseña y desbloqueo. Nada se borra: se desactiva.
 
 import { useCallback, useEffect, useState } from 'react';
-import { apiGetList, apiPost, apiPatch, ApiError } from '@/lib/api';
+import { apiGetList, apiPost, apiPatch, describeApiError } from '@/lib/api';
 import { useSession } from '@/lib/session';
 import type { Paginated, Role } from '@/lib/types';
 
@@ -55,7 +55,7 @@ export default function AdminUsersPage() {
     try {
       setData(await apiGetList<AdminRow>('/admin/users?limit=50'));
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'No se pudieron cargar los administradores.');
+      setError(describeApiError(err, 'No se pudieron cargar los administradores.'));
     } finally {
       setLoading(false);
     }
@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
       setTimeout(() => setNotice(null), 2500);
       await load();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'No se pudo crear el administrador.');
+      setError(describeApiError(err, 'No se pudo crear el administrador.'));
     } finally {
       setCreating(false);
     }
@@ -98,7 +98,7 @@ export default function AdminUsersPage() {
       setTimeout(() => setNotice(null), 2500);
       await load();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'No se pudo actualizar.');
+      setError(describeApiError(err, 'No se pudo actualizar.'));
     }
   }
 
@@ -111,7 +111,7 @@ export default function AdminUsersPage() {
       setNotice('Contraseña restablecida.');
       setTimeout(() => setNotice(null), 2500);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'No se pudo restablecer la contraseña.');
+      setError(describeApiError(err, 'No se pudo restablecer la contraseña.'));
     }
   }
 
@@ -123,7 +123,7 @@ export default function AdminUsersPage() {
       setTimeout(() => setNotice(null), 2500);
       await load();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'No se pudo desbloquear.');
+      setError(describeApiError(err, 'No se pudo desbloquear.'));
     }
   }
 
@@ -182,8 +182,8 @@ export default function AdminUsersPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="a-pass" className="hud text-xs">Contraseña *</label>
-            <input id="a-pass" type="password" required minLength={10} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className={inputCls} />
-            <p className="text-xs text-[var(--text-muted)]">Mínimo 10 caracteres (política del backend).</p>
+            <input id="a-pass" type="password" required minLength={12} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className={inputCls} />
+            <p className="text-xs text-[var(--text-muted)]">Mínimo 12 caracteres, con mayúscula, minúscula y número.</p>
           </div>
           <div className="sm:col-span-2">
             <button

@@ -137,7 +137,12 @@ export default function AdminArtistFormPage() {
         if (err.details?.length) {
           const map: Record<string, string> = {};
           for (const d of err.details) {
-            const key = d.field.includes('.') ? d.field.split('.').pop()! : d.field;
+            // genres.3 -> genres (mensaje de la lista); socialLinks.instagram -> instagram
+            const key = d.field.startsWith('genres')
+              ? 'genres'
+              : d.field.includes('.')
+                ? d.field.split('.').pop()!
+                : d.field;
             if (!(key in map)) map[key] = d.message;
           }
           setFieldErrors(map);
@@ -227,6 +232,9 @@ export default function AdminArtistFormPage() {
             className={inputCls}
           />
           <p className="text-xs text-[var(--text-muted)]">Máximo 12.</p>
+          {fieldErrors.genres && (
+            <p role="alert" className="text-xs text-[var(--color-error,#ff7d8b)]">{fieldErrors.genres}</p>
+          )}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -276,8 +284,12 @@ export default function AdminArtistFormPage() {
                   onChange={(e) =>
                     set('socialLinks', { ...form.socialLinks, [key]: e.target.value })
                   }
+                  aria-invalid={Boolean(fieldErrors[key])}
                   className={inputCls}
                 />
+                {fieldErrors[key] && (
+                  <p role="alert" className="text-xs text-[var(--color-error,#ff7d8b)]">{fieldErrors[key]}</p>
+                )}
               </div>
             ))}
           </div>

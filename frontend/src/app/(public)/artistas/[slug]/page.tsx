@@ -18,11 +18,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {
     const artist = await serverGet<Artist>(`/artists/${slug}`);
+    const description =
+      artist.bio?.slice(0, 155) ??
+      `${artist.name} — artista de Money-Stack. Géneros: ${artist.genres.join(', ') || 'varios'}.`;
+    const image = artist.imageUrl ?? artist.coverUrl ?? undefined;
     return {
       title: artist.name,
-      description:
-        artist.bio?.slice(0, 155) ??
-        `${artist.name} — artista de Money-Stack. Géneros: ${artist.genres.join(', ') || 'varios'}.`,
+      description,
+      alternates: { canonical: `/artistas/${artist.slug}` },
+      openGraph: {
+        type: 'profile',
+        title: artist.name,
+        description,
+        url: `/artistas/${artist.slug}`,
+        ...(image ? { images: [{ url: image, alt: artist.name }] } : {}),
+      },
+      twitter: {
+        card: image ? 'summary_large_image' : 'summary',
+        title: artist.name,
+        description,
+        ...(image ? { images: [image] } : {}),
+      },
     };
   } catch {
     return { title: 'Artista' };
@@ -62,7 +78,7 @@ export default async function ArtistPage({ params }: Props) {
   ) as [SocialLinkKey, string][];
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-6xl px-4 py-10">
       <JsonLd data={musicGroupJsonLd(artist)} />
 
       <nav aria-label="Migas de pan" className="hud text-xs">
@@ -201,6 +217,6 @@ export default async function ArtistPage({ params }: Props) {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

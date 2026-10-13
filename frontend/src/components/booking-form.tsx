@@ -23,7 +23,8 @@ const bookingSchema = z
     eventDate: z
       .string()
       .refine((v) => !isNaN(Date.parse(v)), { message: 'Fecha inválida' })
-      .refine((v) => new Date(v).getTime() > Date.now(), {
+      // La fecha sin hora cuenta en horario de Colombia (UTC-5), igual que el backend.
+      .refine((v) => new Date(`${v}T00:00:00-05:00`).getTime() > Date.now(), {
         message: 'La fecha del evento debe ser futura',
       }),
     city: z.string().trim().min(2, 'La ciudad es obligatoria').max(80),
@@ -31,7 +32,7 @@ const bookingSchema = z
     budget: z
       .string()
       .optional()
-      .refine((v) => v === undefined || v === '' || /^\d+$/.test(v.trim()), {
+      .refine((v) => v === undefined || v === '' || /^[\d.,\s$]+$/.test(v.trim()), {
         message: 'El presupuesto debe ser un número mayor o igual a 0',
       }),
     message: z
@@ -44,7 +45,11 @@ const bookingSchema = z
         message: 'Debes aceptar el tratamiento de datos (Ley 1581 de Colombia)',
       }),
     }),
-    artistId: z.string().uuid().nullable().optional(),
+    // El select vacío envía '' (= sin preferencia); solo un UUID es válido si hay valor.
+    artistId: z
+      .union([z.literal(''), z.string().uuid('Selecciona un artista válido')])
+      .nullable()
+      .optional(),
     website: z.string().optional(), // honeypot
   })
   .strict();
@@ -151,7 +156,8 @@ export default function BookingForm({
         ...values,
         organization: values.organization || null,
         venue: values.venue || null,
-        budget: values.budget === '' ? null : Number(values.budget),
+        // El backend interpreta formatos como "50.000" (miles con punto).
+        budget: values.budget?.trim() ? values.budget.trim() : null,
         artistId: values.artistId || null,
       });
       setSuccess(true);

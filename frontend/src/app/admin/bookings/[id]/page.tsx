@@ -21,7 +21,7 @@ const STATUS_LABEL: Record<BookingStatus, string> = {
 const TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
   PENDING: ['IN_REVIEW', 'ACCEPTED', 'REJECTED', 'CANCELLED'],
   IN_REVIEW: ['ACCEPTED', 'REJECTED', 'CANCELLED'],
-  ACCEPTED: [],
+  ACCEPTED: ['CANCELLED'],
   REJECTED: [],
   CANCELLED: [],
 };
@@ -62,7 +62,7 @@ export default function AdminBookingDetailPage() {
     void load();
   }, [load]);
 
-  async function save(payload: { status?: BookingStatus; adminNotes?: string }) {
+  async function save(payload: { status: BookingStatus; adminNotes?: string }) {
     setSaving(true);
     setError(null);
     setSaved(false);
@@ -209,7 +209,8 @@ export default function AdminBookingDetailPage() {
             <button
               type="button"
               disabled={saving}
-              onClick={() => save({ adminNotes: notes })}
+              // El backend exige status en todo PATCH: se reenvía el actual.
+              onClick={() => save({ status: booking.status, adminNotes: notes })}
               className="rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-[var(--depth-0)] transition-transform hover:scale-[1.02] disabled:opacity-50"
             >
               {saving ? 'Guardando…' : 'Guardar notas'}
