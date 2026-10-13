@@ -43,6 +43,10 @@ const artistPublicStub = z.object({
   isSigned: z.boolean(),
   isBookable: z.boolean(),
   isFeatured: z.boolean(),
+});
+
+// Respuesta admin: añade isActive (dato interno que el público no ve).
+const artistAdminStub = artistPublicStub.extend({
   isActive: z.boolean(),
 });
 
@@ -137,4 +141,5 @@ module.exports = {
   artistIdParamSchema,
   artistSlugParamSchema,
   artistPublicStub,
+  artistAdminStub,
 };

@@ -160,6 +160,16 @@ async function changePassword(adminId, currentPassword, newPassword) {
   });
 }
 
+// Usado por el middleware authenticate (en cada petición): solo los services tocan Prisma.
+// Devuelve null si no existe o está inactivo.
+async function findActiveAdmin(id) {
+  const admin = await prisma.adminUser.findUnique({
+    where: { id },
+    select: { id: true, email: true, name: true, role: true, isActive: true },
+  });
+  return admin && admin.isActive ? admin : null;
+}
+
 module.exports = {
   login,
   refresh,
@@ -168,4 +178,5 @@ module.exports = {
   getProfile,
   purgeExpiredTokens,
   changePassword,
+  findActiveAdmin,
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const prisma = require('../lib/prisma');
+const authService = require('../services/auth.service');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 const { verifyAccessToken } = require('../utils/tokens');
@@ -20,11 +20,8 @@ const authenticate = asyncHandler(async (req, res, next) => {
     throw new AppError('Token inválido o expirado', 401, 'INVALID_TOKEN');
   }
 
-  const admin = await prisma.adminUser.findUnique({
-    where: { id: payload.sub },
-    select: { id: true, email: true, name: true, role: true, isActive: true },
-  });
-  if (!admin || !admin.isActive) {
+  const admin = await authService.findActiveAdmin(payload.sub);
+  if (!admin) {
     throw new AppError('Autenticación requerida', 401, 'UNAUTHENTICATED');
   }
 

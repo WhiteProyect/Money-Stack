@@ -1,6 +1,7 @@
 'use strict';
 
 const { z } = require('zod');
+const { parseCop } = require('../utils/parsers');
 
 const urlHttps = z
   .string()
@@ -21,9 +22,8 @@ const priceSchema = z
   .optional()
   .transform((v, ctx) => {
     if (v === undefined || v === '') return undefined;
-    const cleaned = typeof v === 'number' ? String(v) : String(v).trim().replace(/[^\d.-]/g, '');
-    const n = Number(cleaned);
-    if (cleaned === '' || !Number.isFinite(n)) {
+    const n = parseCop(v);
+    if (!Number.isFinite(n)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El precio debe ser un número mayor o igual a 0' });
       return z.NEVER;
     }
@@ -60,6 +60,10 @@ const eventPublicFields = z.object({
       })
     )
     .default([]),
+});
+
+// Respuesta admin: añade el admin que creó el evento (dato interno, nunca público).
+const eventAdminFields = eventPublicFields.extend({
   createdBy: z
     .object({
       id: z.string().uuid(),
@@ -89,7 +93,7 @@ const eventFields = z.object({
   price: priceSchema,
   capacity: z.number().int().min(1).max(10_000_000).nullable().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'CANCELLED', 'FINISHED']).optional(),
-});
+}).strict();
 
 // PATCH: al menos un campo.
 const updateEventSchema = eventFields
@@ -108,7 +112,7 @@ const lineupEntrySchema = z.object({
   artistId: z.string().uuid('ID de artista inválido'),
   order: z.number().int().min(0),
   isHeadliner: z.boolean(),
-});
+}).strict();
 
 const lineupSchema = z
   .array(lineupEntrySchema)
@@ -157,6 +161,7 @@ const eventSlugParamSchema = z
 module.exports = {
   urlHttps,
   eventPublicFields,
+  eventAdminFields,
   createEventSchema,
   updateEventSchema,
   lineupEntrySchema,

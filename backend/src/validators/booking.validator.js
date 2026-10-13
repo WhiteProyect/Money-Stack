@@ -1,6 +1,7 @@
 'use strict';
 
 const { z } = require('zod');
+const { parseColombiaDate, parseCop } = require('../utils/parsers');
 
 // La fecha futura se valida contra el momento de la petición (no contra el
 // arranque del proceso: el backend puede estar días corriendo).
@@ -8,7 +9,7 @@ const futureDate = z
   .string()
   .trim()
   .refine((v) => {
-    const d = new Date(v);
+    const d = parseColombiaDate(v);
     return !isNaN(d.getTime()) && d.getTime() > Date.now();
   }, { message: 'La fecha del evento debe ser futura' });
 
@@ -29,9 +30,8 @@ const budgetSchema = z
   .optional()
   .transform((v, ctx) => {
     if (v === undefined || v === null || v === '') return v === null ? null : undefined;
-    const cleaned = typeof v === 'number' ? String(v) : String(v).trim().replace(/[^\d.-]/g, '');
-    const n = Number(cleaned);
-    if (cleaned === '' || !Number.isFinite(n)) {
+    const n = parseCop(v);
+    if (!Number.isFinite(n)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El presupuesto debe ser un número mayor o igual a 0' });
       return z.NEVER;
     }

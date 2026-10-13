@@ -1,9 +1,10 @@
 'use strict';
 
+const { Prisma } = require('@prisma/client');
 const prisma = require('../lib/prisma');
 const AppError = require('../utils/AppError');
 const { getPagination, buildPaginated } = require('../utils/pagination');
-const { artistPublicStub } = require('../validators/artist.validator');
+const { artistPublicStub, artistAdminStub } = require('../validators/artist.validator');
 
 // Síncrona: genera un slug candidato desde el nombre (sin acentos, minúsculas, etc.)
 function slugify(name) {
@@ -21,15 +22,15 @@ function slugify(name) {
   return base;
 }
 
-// Busca el primer sufijo libre para un slug base dado.
-async function uniqueSlug(base) {
+// Busca el primer sufijo libre para un slug base dado. excludeId evita que un
+// artista choque consigo mismo al renombrarse.
+async function uniqueSlug(base, excludeId = null) {
   let candidate = base;
   let idx = 2;
   while (true) {
-    const existing = await prisma.artist.findUnique({
-      where: { slug: candidate },
-      select: { id: true },
-    });
+    const where = { slug: candidate };
+    if (excludeId) where.id = { not: excludeId };
+    const existing = await prisma.artist.findFirst({ where, select: { id: true } });
     if (!existing) return candidate;
     candidate = `${base}-${idx}`;
     idx += 1;
@@ -78,7 +79,8 @@ async function listPublic(query = {}, options = {}) {
     prisma.artist.count({ where }),
   ]);
 
-  const data = raw.map((a) => artistPublicStub.parse(a));
+  const shape = admin ? artistAdminStub : artistPublicStub;
+  const data = raw.map((a) => shape.parse(a));
   return buildPaginated(data, total, { page, limit });
 }
 
@@ -105,9 +107,9 @@ async function getById(id) {
     throw new AppError('Artista no encontrado', 404, 'ARTIST_NOT_FOUND');
   }
 
-  // En admin se pueden ver inactivos, pero el modelo público sigue siendo elStub
+  // En admin se ven también los inactivos y el campo isActive.
   return {
-    ...artistPublicStub.parse(artist),
+    ...artistAdminStub.parse(artist),
     _count: { bookings: artist._count?.bookings ?? 0 },
   };
 }
@@ -124,7 +126,8 @@ async function create(data) {
     genres: data.genres ?? [],
     imageUrl: data.imageUrl ?? null,
     coverUrl: data.coverUrl ?? null,
-    socialLinks: data.socialLinks ?? null,
+    // Prisma no acepta null en columnas JSON: si no hay redes, se omite el campo.
+    socialLinks: data.socialLinks ?? undefined,
     isSigned: data.isSigned ?? true,
     isBookable: data.isBookable ?? true,
     isFeatured: data.isFeatured ?? false,
@@ -133,7 +136,7 @@ async function create(data) {
 
   try {
     const created = await prisma.artist.create({ data: safeData });
-    return artistPublicStub.parse(created);
+    return artistAdminStub.parse(created);
   } catch (err) {
     if (err.code === 'P2002') {
       throw new AppError('El slug ya está en uso', 409, 'ARTIST_SLUG_IN_USE');
@@ -153,7 +156,12 @@ async function update(id, data) {
 
   // Si cambia el nombre, regenerar slug manteniendo unicidad
   if (data.name && data.name.trim() !== existing.name) {
-    updatePayload.slug = await uniqueSlug(slugify(data.name));
+    updatePayload.slug = await uniqueSlug(slugify(data.name), id);
+  }
+
+  // null en una columna JSON requiere Prisma.DbNull (borrar las redes).
+  if (updatePayload.socialLinks === null) {
+    updatePayload.socialLinks = Prisma.DbNull;
   }
 
   // Normalizar campos de texto
@@ -169,7 +177,7 @@ async function update(id, data) {
       where: { id },
       data: updatePayload,
     });
-    return artistPublicStub.parse(updated);
+    return artistAdminStub.parse(updated);
   } catch (err) {
     if (err.code === 'P2002') {
       throw new AppError('El slug ya está en uso', 409, 'ARTIST_SLUG_IN_USE');

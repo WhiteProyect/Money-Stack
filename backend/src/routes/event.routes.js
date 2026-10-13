@@ -6,6 +6,7 @@ const validate = require('../middlewares/validate');
 const authenticate = require('../middlewares/authenticate');
 const authorize = require('../middlewares/authorize');
 const noStore = require('../middlewares/noStore');
+const methodNotAllowed = require('../utils/methodNotAllowed');
 const {
   listEventsQuerySchema,
   listAdminEventsQuerySchema,
@@ -41,12 +42,7 @@ adminRouter.put(
   validate(lineupRequestSchema),
   controller.setLineup
 );
-adminRouter.delete('/:id', (req, res, next) => {
-  const err = new Error('No se permite eliminar eventos. Úsalos cancelando con status');
-  err.statusCode = 405;
-  err.code = 'METHOD_NOT_ALLOWED';
-  next(err);
-});
+adminRouter.delete('/:id', methodNotAllowed('No se permite eliminar eventos. Úsalos cancelando con status'));
 
 router.use('/admin/events', adminRouter);
 

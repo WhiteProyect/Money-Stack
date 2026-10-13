@@ -3,6 +3,7 @@
 const prisma = require('../lib/prisma');
 const AppError = require('../utils/AppError');
 const { getPagination, buildPaginated } = require('../utils/pagination');
+const { parseColombiaDate } = require('../utils/parsers');
 
 // Transiciones de estado permitidas (de -> a). No se permite bajar de estado
 // arbitrariamente: el flujo es PENDING -> IN_REVIEW -> (ACCEPTED|REJECTED|CANCELLED).
@@ -17,6 +18,7 @@ const ALLOWED_TRANSITIONS = new Set([
   'PENDING->CANCELLED',
   'PENDING->ACCEPTED',
   'PENDING->REJECTED',
+  'ACCEPTED->CANCELLED', // una solicitud aceptada aún puede cancelarse
 ]);
 
 function allowedTransition(current, next) {
@@ -70,7 +72,7 @@ async function createPublic(data, ip) {
     phone: data.phone.trim(),
     organization: data.organization ? data.organization.trim() : null,
     eventType: data.eventType.trim(),
-    eventDate: new Date(data.eventDate),
+    eventDate: parseColombiaDate(data.eventDate),
     city: data.city.trim(),
     venue: data.venue ? data.venue.trim() : null,
     budget: data.budget != null ? data.budget : null,
@@ -120,8 +122,8 @@ async function listAdmin(query = {}) {
 
   if (startDate || endDate) {
     where.eventDate = {};
-    if (startDate) where.eventDate.gte = new Date(startDate);
-    if (endDate) where.eventDate.lte = new Date(endDate);
+    if (startDate) where.eventDate.gte = parseColombiaDate(startDate);
+    if (endDate) where.eventDate.lte = parseColombiaDate(endDate, { endOfDay: true });
   }
 
   if (search) {

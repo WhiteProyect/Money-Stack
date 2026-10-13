@@ -3,7 +3,7 @@
 const prisma = require('../lib/prisma');
 const AppError = require('../utils/AppError');
 const { getPagination, buildPaginated } = require('../utils/pagination');
-const { eventPublicFields } = require('../validators/event.validator');
+const { eventPublicFields, eventAdminFields } = require('../validators/event.validator');
 
 function slugify(title) {
   let base = title
@@ -26,7 +26,8 @@ async function uniqueSlug(base, excludeId = null) {
   while (true) {
     const where = { slug: candidate };
     if (excludeId) where.id = { not: excludeId };
-    const existing = await prisma.event.findUnique({ where, select: { id: true } });
+    // findUnique no admite filtros no únicos (id: { not }); findFirst sí.
+    const existing = await prisma.event.findFirst({ where, select: { id: true } });
     if (!existing) return candidate;
     candidate = `${base}-${idx}`;
     idx += 1;
@@ -100,7 +101,7 @@ async function listPublic(query = {}, options = {}) {
     prisma.event.count({ where }),
   ]);
 
-  const data = raw.map((e) => publicShape(e));
+  const data = raw.map((e) => publicShape(e, admin));
   return buildPaginated(data, total, { page, limit });
 }
 
@@ -121,8 +122,12 @@ async function getBySlug(slug) {
     throw new AppError('Evento no encontrado', 404, 'EVENT_NOT_FOUND');
   }
 
+  // Público: solo PUBLISHED. Borradores y finalizados internos no existen para el público.
   if (event.status === 'CANCELLED') {
     throw new AppError('Este evento fue cancelado', 410, 'EVENT_CANCELLED');
+  }
+  if (event.status !== 'PUBLISHED') {
+    throw new AppError('Evento no encontrado', 404, 'EVENT_NOT_FOUND');
   }
 
   return publicShape(event);
@@ -145,7 +150,7 @@ async function getById(id) {
     throw new AppError('Evento no encontrado', 404, 'EVENT_NOT_FOUND');
   }
 
-  return publicShape(event);
+  return publicShape(event, true);
 }
 
 async function create(data, actorId) {
@@ -191,7 +196,7 @@ async function create(data, actorId) {
     },
   });
 
-  return publicShape(event);
+  return publicShape(event, true);
 }
 
 async function update(id, data, actorId) {
@@ -258,7 +263,7 @@ async function update(id, data, actorId) {
     },
   });
 
-  return publicShape(updated);
+  return publicShape(updated, true);
 }
 
 // Reemplaza el cartel completo. Solo artists activos pueden estar en el cartel.
@@ -319,11 +324,13 @@ async function setLineup(eventId, entries) {
     },
   });
 
-  return publicShape(withLineup);
+  return publicShape(withLineup, true);
 }
 
-function publicShape(event) {
-  return eventPublicFields.parse({
+// admin=true añade campos internos (createdBy); el público nunca los recibe.
+function publicShape(event, admin = false) {
+  const schema = admin ? eventAdminFields : eventPublicFields;
+  return schema.parse({
     id: event.id,
     title: event.title,
     slug: event.slug,

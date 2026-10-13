@@ -27,7 +27,7 @@ const schema = z
     COOKIE_DOMAIN: z.string().optional().transform((v) => v || undefined),
 
     CORS_ORIGINS: z.string().min(1, 'CORS_ORIGINS es obligatorio'),
-    TRUST_PROXY: z.coerce.number().int().min(0).default(1),
+    TRUST_PROXY: z.coerce.number().int().min(0).default(0),
 
     RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(15 * 60 * 1000),
     RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
