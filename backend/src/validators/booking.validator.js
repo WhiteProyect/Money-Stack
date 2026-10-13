@@ -2,14 +2,20 @@
 
 const { z } = require('zod');
 
-const now = new Date();
+// La fecha futura se valida contra el momento de la petición (no contra el
+// arranque del proceso: el backend puede estar días corriendo).
 const futureDate = z
   .string()
   .trim()
   .refine((v) => {
     const d = new Date(v);
-    return !isNaN(d.getTime()) && d > now;
+    return !isNaN(d.getTime()) && d.getTime() > Date.now();
   }, { message: 'La fecha del evento debe ser futura' });
+
+const isoDate = z
+  .string()
+  .trim()
+  .refine((v) => !isNaN(Date.parse(v)), { message: 'Fecha inválida' });
 
 const messageSchema = z
   .string()
@@ -17,8 +23,27 @@ const messageSchema = z
   .min(20, 'El mensaje debe tener al menos 20 caracteres')
   .max(2000, 'El mensaje no puede superar los 2000 caracteres');
 
-// Honeypot: debe venir vacío. Si viene con valor, lo capturamos pero
-// no rechazamos — el AGENTS.md pide responder 201 igual y descartar.
+// Presupuesto: acepta número o string numérico; ausente => undefined.
+const budgetSchema = z
+  .union([z.string(), z.number(), z.null()])
+  .optional()
+  .transform((v, ctx) => {
+    if (v === undefined || v === null || v === '') return v === null ? null : undefined;
+    const cleaned = typeof v === 'number' ? String(v) : String(v).trim().replace(/[^\d.-]/g, '');
+    const n = Number(cleaned);
+    if (cleaned === '' || !Number.isFinite(n)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El presupuesto debe ser un número mayor o igual a 0' });
+      return z.NEVER;
+    }
+    return n;
+  })
+  .refine((v) => v === undefined || v === null || v >= 0, {
+    message: 'El presupuesto debe ser un número mayor o igual a 0',
+    path: ['budget'],
+  });
+
+// Honeypot: debe venir vacío. Si viene con valor, se responde 201 igual y se
+// descarta (no se rechaza la petición).
 const honeypotSchema = z
   .string()
   .trim()
@@ -44,7 +69,7 @@ const bookingCreateSchema = z
       .trim()
       .min(7, 'El teléfono es obligatorio')
       .max(30),
-    organization: z.string().trim().max(120).optional(),
+    organization: z.string().trim().max(120).nullable().optional(),
     eventType: z
       .string()
       .trim()
@@ -56,27 +81,14 @@ const bookingCreateSchema = z
       .trim()
       .min(2, 'La ciudad es obligatoria')
       .max(80),
-    venue: z.string().trim().max(160).optional(),
-    budget: z
-      .string()
-      .trim()
-      .optional()
-      .transform((v) => {
-        if (!v) return null;
-        const n = Number(v.replace(/[^\\d.-]/g, ''));
-        if (!Number.isFinite(n) || n < 0) return null;
-        return n;
-      })
-      .refine((v) => v === null || v >= 0, {
-        message: 'El presupuesto debe ser un número mayor o igual a 0',
-        path: ['budget'],
-      }),
+    venue: z.string().trim().max(160).nullable().optional(),
+    budget: budgetSchema,
     message: messageSchema,
     consentData: z.boolean().refine((v) => v === true, {
       message: 'Debes aceptar el tratamiento de datos (Ley 1581 de Colombia)',
       path: ['consentData'],
     }),
-    artistId: z.string().uuid('ID de artista inválido').optional(),
+    artistId: z.string().uuid('ID de artista inválido').nullable().optional(),
     // honeypot: si viene lleno se descarta, pero no se rechaza la petición.
     website: honeypotSchema,
   })
@@ -89,8 +101,8 @@ const bookingListQuerySchema = z
     limit: z.coerce.number().int().min(1).max(100).default(20),
     status: z.enum(['PENDING', 'IN_REVIEW', 'ACCEPTED', 'REJECTED', 'CANCELLED']).optional(),
     artistId: z.string().uuid('ID de artista inválido').optional(),
-    startDate: z.string().trim().max(100).optional(),
-    endDate: z.string().trim().max(100).optional(),
+    startDate: isoDate.optional(),
+    endDate: isoDate.optional(),
     search: z.string().trim().max(120).optional(),
   })
   .strict();
@@ -101,11 +113,11 @@ const bookingIdParamSchema = z
   })
   .strict();
 
-// Admin: PATCH (status + adminNotes). status es el campo principal; adminNotes opcional.
+// Admin: PATCH (status + adminNotes).
 const bookingStatusTransitionSchema = z
   .object({
     status: z.enum(['PENDING', 'IN_REVIEW', 'ACCEPTED', 'REJECTED', 'CANCELLED']),
-    adminNotes: z.string().trim().max(4000).optional(),
+    adminNotes: z.string().trim().max(4000).nullable().optional(),
   })
   .strict()
   .refine((d) => d.status !== undefined, { message: 'El campo status es obligatorio' });

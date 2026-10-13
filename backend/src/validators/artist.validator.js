@@ -15,7 +15,7 @@ const SOCIAL_LINK_KEYS = [
 const urlHttps = z
   .string()
   .trim()
-  .refine((v) => /^(https:\/\/)/.test(v), {
+  .refine((v) => !v || /^(https:\/\/)/.test(v), {
     message: 'Debe ser una URL HTTPS',
   });
 
@@ -27,21 +27,22 @@ const socialLinkEntry = z
     message: 'Si se proporciona, debe ser una URL HTTPS',
   });
 
-const socialLinksSchema = z
-  .record(z.enum(SOCIAL_LINK_KEYS), socialLinkEntry)
-  .optional();
+const socialLinksRecord = z.record(z.enum(SOCIAL_LINK_KEYS), socialLinkEntry);
 
+// Respuesta pública: Prisma devuelve null en campos opcionales, por eso todos
+// los campos opcionales aceptan null además de undefined.
 const artistPublicStub = z.object({
   id: z.string().uuid(),
   name: z.string().trim().min(1),
   slug: z.string().trim().min(1),
-  bio: z.string().trim().optional(),
+  bio: z.string().trim().nullable().optional(),
   genres: z.array(z.string().trim().min(1)).default([]),
-  imageUrl: urlHttps.optional(),
-  coverUrl: urlHttps.optional(),
-  socialLinks: socialLinksSchema,
+  imageUrl: urlHttps.nullable().optional(),
+  coverUrl: urlHttps.nullable().optional(),
+  socialLinks: socialLinksRecord.nullable().optional(),
   isSigned: z.boolean(),
   isBookable: z.boolean(),
+  isFeatured: z.boolean(),
   isActive: z.boolean(),
 });
 
@@ -52,14 +53,11 @@ const artistFields = z.object({
     .trim()
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(120),
-  bio: z.string().trim().max(4000).optional(),
-  genres: z
-    .array(z.string().trim().min(1).max(60))
-    .max(12, 'Máximo 12 géneros')
-    .default([]),
-  imageUrl: urlHttps.optional(),
-  coverUrl: urlHttps.optional(),
-  socialLinks: socialLinksSchema,
+  bio: z.string().trim().max(4000).nullable().optional(),
+  genres: z.array(z.string().trim().min(1).max(60)).max(12, 'Máximo 12 géneros').nullable().default([]),
+  imageUrl: urlHttps.nullable().optional(),
+  coverUrl: urlHttps.nullable().optional(),
+  socialLinks: socialLinksRecord.nullable().optional(),
   isSigned: z.boolean().optional(),
   isBookable: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
@@ -104,7 +102,7 @@ const artistIdParamSchema = z
   })
   .strict();
 
-// Admin: slugs para rutas públicas.
+// Público/admin: slug para rutas.
 const artistSlugParamSchema = z
   .object({
     slug: z.string().trim().min(1).max(160),
@@ -114,7 +112,7 @@ const artistSlugParamSchema = z
 module.exports = {
   SOCIAL_LINK_KEYS,
   urlHttps,
-  socialLinksSchema,
+  socialLinksSchema: socialLinksRecord,
   createArtistSchema,
   updateArtistSchema,
   listArtistsQuerySchema,

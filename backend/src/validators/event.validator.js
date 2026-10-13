@@ -9,42 +9,45 @@ const urlHttps = z
     message: 'Debe ser una URL HTTPS',
   });
 
-// Precio en COP: opcional, pero si se envía debe ser >= 0.
-const priceSchema = z
-  .string()
-  .trim()
-  .optional()
-  .transform((v) => {
-    if (!v) return null;
-    const s = v.replace(/[^\d.-]/g, '');
-    const n = Number(s);
-    if (!Number.isFinite(n) || n < 0) return null; // permitido: el transform no debe fallar; la regla la aplica refine
-    return n;
-  })
-  .refine((v) => v === null || v >= 0, {
-    message: 'El precio debe ser un número mayor o igual a 0',
-    path: ['price'],
-  });
-
 const dateTime = z
   .string()
   .trim()
   .refine((v) => !isNaN(Date.parse(v)), { message: 'Fecha inválida' });
 
+// Precio en COP: acepta número o string numérico. Si no viene (undefined o '')
+// devuelve undefined para que PATCH no lo borre; si viene inválido, error.
+const priceSchema = z
+  .union([z.string(), z.number()])
+  .optional()
+  .transform((v, ctx) => {
+    if (v === undefined || v === '') return undefined;
+    const cleaned = typeof v === 'number' ? String(v) : String(v).trim().replace(/[^\d.-]/g, '');
+    const n = Number(cleaned);
+    if (cleaned === '' || !Number.isFinite(n)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El precio debe ser un número mayor o igual a 0' });
+      return z.NEVER;
+    }
+    return n;
+  })
+  .refine((v) => v === undefined || v >= 0, {
+    message: 'El precio debe ser un número mayor o igual a 0',
+  });
+
+// Respuesta pública: acepta null en campos opcionales (los servicios normalizan a null).
 const eventPublicFields = z.object({
   id: z.string().uuid(),
   title: z.string().trim().min(1),
   slug: z.string().trim().min(1),
-  description: z.string().trim().optional(),
+  description: z.string().trim().nullable().optional(),
   venueName: z.string().trim().min(1),
-  address: z.string().trim().optional(),
-  city: z.string().trim().optional(),
+  address: z.string().trim().nullable().optional(),
+  city: z.string().trim().nullable().optional(),
   startsAt: z.string(),
-  endsAt: z.string().optional(),
-  coverUrl: urlHttps.optional(),
-  ticketUrl: urlHttps.optional(),
-  price: z.number().optional(),
-  capacity: z.number().int().optional(),
+  endsAt: z.string().nullable().optional(),
+  coverUrl: urlHttps.nullable().optional(),
+  ticketUrl: urlHttps.nullable().optional(),
+  price: z.number().nullable().optional(),
+  capacity: z.number().int().nullable().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'CANCELLED', 'FINISHED']),
   artists: z
     .array(
@@ -62,34 +65,43 @@ const eventPublicFields = z.object({
       id: z.string().uuid(),
       name: z.string().trim().min(1),
     })
+    .nullable()
     .optional(),
 });
 
-// Campos aceptados en create/update (admin). Todos opcionales salvo los obligatorios.
+// Campos aceptados en create/update (admin).
 const eventFields = z.object({
   title: z.string().trim().min(2, 'El título debe tener al menos 2 caracteres').max(160),
-  slug: z.string().trim().min(2, 'El slug debe tener al menos 2 caracteres').max(160).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'El slug solo puede tener letras, números y guiones'),
-  description: z.string().trim().max(6000).optional(),
+  slug: z
+    .string()
+    .trim()
+    .min(2, 'El slug debe tener al menos 2 caracteres')
+    .max(160)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'El slug solo puede tener letras, números y guiones'),
+  description: z.string().trim().max(6000).nullable().optional(),
   venueName: z.string().trim().min(2, 'El nombre del venue es obligatorio').max(160),
-  address: z.string().trim().max(240).optional(),
-  city: z.string().trim().max(80).optional(),
+  address: z.string().trim().max(240).nullable().optional(),
+  city: z.string().trim().max(80).nullable().optional(),
   startsAt: dateTime,
   endsAt: dateTime.optional(),
-  coverUrl: urlHttps.optional(),
-  ticketUrl: urlHttps.optional(),
+  coverUrl: urlHttps.nullable().optional(),
+  ticketUrl: urlHttps.nullable().optional(),
   price: priceSchema,
-  capacity: z.number().int().min(1).max(10_000_000).optional(),
+  capacity: z.number().int().min(1).max(10_000_000).nullable().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'CANCELLED', 'FINISHED']).optional(),
 });
 
-// At least one field for PATCH.
-const updateEventSchema = eventFields.partial().refine((d) => Object.keys(d).length > 0, { message: 'Envía al menos un campo' });
+// PATCH: al menos un campo.
+const updateEventSchema = eventFields
+  .partial()
+  .refine((d) => Object.keys(d).length > 0, { message: 'Envía al menos un campo' });
 
-// Create: slug opcional, pero si no viene se genera desde title.
-const createEventSchema = eventFields.partial().refine(
-  (d) => d.title && d.venueName && d.startsAt,
-  { message: 'title, venueName y startsAt son obligatorios al crear' }
-);
+// Create: title, venueName y startsAt obligatorios (slug opcional: se genera).
+const createEventSchema = eventFields
+  .partial()
+  .refine((d) => d.title && d.venueName && d.startsAt, {
+    message: 'title, venueName y startsAt son obligatorios al crear',
+  });
 
 // Lineup: reemplazo completo del cartel.
 const lineupEntrySchema = z.object({
