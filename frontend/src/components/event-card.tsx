@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { EventItem } from '@/lib/types';
 import { formatDate } from '@/lib/format';
@@ -11,13 +12,14 @@ export default function EventCard({ event }: { event: EventItem }) {
       href={`/eventos/${event.slug}`}
       className="group block rounded-xl border border-[var(--depth-4)] bg-[var(--depth-3)] p-4 transition-transform duration-200 hover:-translate-y-1 hover:border-[var(--accent-soft)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
     >
-      <div className="aspect-[16/9] w-full overflow-hidden rounded-lg bg-[var(--depth-2)]">
+      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-[var(--depth-2)]">
         {event.coverUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={event.coverUrl}
             alt={`Portada de ${event.title}`}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           <div

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -8,7 +9,7 @@ import { musicEventJsonLd } from '@/lib/jsonld';
 import { formatDateRange, formatDate, formatPrice } from '@/lib/format';
 import type { EventItem } from '@/lib/types';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -101,12 +102,14 @@ export default async function EventPage({ params }: Props) {
         {/* Columna principal */}
         <div className="lg:col-span-2">
           {event.coverUrl && (
-            <div className="overflow-hidden rounded-2xl border border-[var(--depth-4)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-[var(--depth-4)] bg-[var(--depth-2)]">
+              <Image
                 src={event.coverUrl}
                 alt={`Portada de ${event.title}`}
-                className="w-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                className="object-cover"
               />
             </div>
           )}

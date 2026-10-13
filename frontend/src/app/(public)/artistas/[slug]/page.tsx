@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -8,7 +9,7 @@ import { serverGet, serverGetList, ServerApiError, qs } from '@/lib/server-api';
 import { musicGroupJsonLd } from '@/lib/jsonld';
 import type { Artist, EventItem, SocialLinkKey } from '@/lib/types';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -93,21 +94,29 @@ export default async function ArtistPage({ params }: Props) {
 
       {/* Cabecera con portada */}
       <section className="relative mt-4 overflow-hidden rounded-2xl border border-[var(--depth-4)] bg-[var(--depth-2)]">
-        <div className="h-48 w-full bg-[var(--depth-3)] md:h-64">
+        <div className="relative h-48 w-full bg-[var(--depth-3)] md:h-64">
           {artist.coverUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={artist.coverUrl}
-              alt=""
-              className="h-full w-full object-cover opacity-80"
+              alt={`Portada de ${artist.name}`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover opacity-80"
             />
           )}
         </div>
         <div className="relative -mt-16 flex flex-col gap-6 px-6 pb-8 md:flex-row md:items-end">
-          <div className="h-32 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-[var(--depth-4)] bg-[var(--depth-3)] md:h-40 md:w-40">
+          <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-xl border-2 border-[var(--depth-4)] bg-[var(--depth-3)] md:h-40 md:w-40">
             {artist.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={artist.imageUrl} alt={artist.name} className="h-full w-full object-cover" />
+              <Image
+                src={artist.imageUrl}
+                alt={artist.name}
+                fill
+                priority
+                sizes="(max-width: 768px) 128px, 160px"
+                className="object-cover"
+              />
             ) : (
               <div className="flex h-full items-center justify-center text-[var(--text-muted)]" aria-hidden="true">
                 <svg className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25}>

@@ -20,10 +20,30 @@ export function isApiUnavailable(err: unknown): boolean {
   return err instanceof ServerApiError && err.status === 0;
 }
 
-async function serverFetch(path: string): Promise<any> {
+export interface ServerFetchOptions {
+  revalidate?: number | false;
+  tags?: string[];
+  cache?: RequestCache;
+}
+
+async function serverFetch(path: string, options: ServerFetchOptions = {}): Promise<any> {
+  const fetchInit: RequestInit = {};
+
+  if (options.cache) {
+    fetchInit.cache = options.cache;
+  } else if (options.revalidate !== undefined || options.tags !== undefined) {
+    fetchInit.next = {
+      ...(options.revalidate !== undefined ? { revalidate: options.revalidate } : {}),
+      ...(options.tags ? { tags: options.tags } : {}),
+    };
+  } else {
+    // Por defecto en endpoints públicos: revalidación cada 60s (ISR)
+    fetchInit.next = { revalidate: 60 };
+  }
+
   let res: Response;
   try {
-    res = await fetch(`${API_URL}/api/v1${path}`, { cache: 'no-store' });
+    res = await fetch(`${API_URL}/api/v1${path}`, fetchInit);
   } catch {
     throw new ServerApiError(0, 'API_UNAVAILABLE', 'No se pudo conectar con la API');
   }
@@ -41,16 +61,17 @@ async function serverFetch(path: string): Promise<any> {
 }
 
 // GET que devuelve { data }
-export async function serverGet<T>(path: string): Promise<T> {
-  const body = await serverFetch(path);
+export async function serverGet<T>(path: string, options?: ServerFetchOptions): Promise<T> {
+  const body = await serverFetch(path, options);
   return body.data as T;
 }
 
 // GET que devuelve { data, pagination }
 export async function serverGetList<T>(
-  path: string
+  path: string,
+  options?: ServerFetchOptions
 ): Promise<{ data: T[]; pagination: import('./types').Pagination }> {
-  return serverFetch(path);
+  return serverFetch(path, options);
 }
 
 // Construye una query string desde un objeto ignorando valores vacíos.

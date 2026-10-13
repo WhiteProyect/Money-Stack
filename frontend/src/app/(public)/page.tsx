@@ -8,8 +8,8 @@ import { serverGetList } from '@/lib/server-api';
 import { ORGANIZATION_JSONLD } from '@/lib/jsonld';
 import type { Artist, EventItem } from '@/lib/types';
 
-// Datos reales desde la API: renderizado dinámico en cada petición.
-export const dynamic = 'force-dynamic';
+// Datos reales desde la API con revalidación periódica (ISR).
+export const revalidate = 60;
 
 export const metadata = {
   // El layout aplica el template '%s — Money-Stack': aquí va solo la parte propia.

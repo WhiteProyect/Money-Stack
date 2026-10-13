@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Artist } from '@/lib/types';
 
@@ -7,13 +8,14 @@ export default function ArtistCard({ artist }: { artist: Artist }) {
       href={`/artistas/${artist.slug}`}
       className="group block rounded-xl border border-[var(--depth-4)] bg-[var(--depth-3)] p-4 transition-transform duration-200 hover:-translate-y-1 hover:border-[var(--accent-soft)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
     >
-      <div className="aspect-square w-full overflow-hidden rounded-lg bg-[var(--depth-2)]">
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[var(--depth-2)]">
         {artist.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={artist.imageUrl}
             alt={artist.name}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           <div
