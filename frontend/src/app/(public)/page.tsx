@@ -1,7 +1,8 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Money-Stack — Sello discográfico desde Caucasia',
+  // El layout aplica el template '%s — Money-Stack': aquí va solo la parte propia.
+  title: 'Sello discográfico independiente desde Caucasia',
   description:
     'Sello discográfico independiente desde Caucasia, Antioquia. Catálogo de artistas, agenda de eventos y sistema de bookings musicales.',
 };
