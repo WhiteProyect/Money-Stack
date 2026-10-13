@@ -7,19 +7,21 @@ const { getPagination, buildPaginated } = require('../utils/pagination');
 // Transiciones de estado permitidas (de -> a). No se permite bajar de estado
 // arbitrariamente: el flujo es PENDING -> IN_REVIEW -> (ACCEPTED|REJECTED|CANCELLED).
 // CANCELLED puede aplicarse desde IN_REVIEW o desde PENDING si el admin lo desea.
+// Clave "DE->A": un Set de arrays no funcionaría (los arrays se comparan por
+// referencia y has() siempre daría false).
 const ALLOWED_TRANSITIONS = new Set([
-  ['PENDING', 'IN_REVIEW'],
-  ['IN_REVIEW', 'ACCEPTED'],
-  ['IN_REVIEW', 'REJECTED'],
-  ['IN_REVIEW', 'CANCELLED'],
-  ['PENDING', 'CANCELLED'],
-  ['PENDING', 'ACCEPTED'],
-  ['PENDING', 'REJECTED'],
+  'PENDING->IN_REVIEW',
+  'IN_REVIEW->ACCEPTED',
+  'IN_REVIEW->REJECTED',
+  'IN_REVIEW->CANCELLED',
+  'PENDING->CANCELLED',
+  'PENDING->ACCEPTED',
+  'PENDING->REJECTED',
 ]);
 
 function allowedTransition(current, next) {
   if (current === next) return true; // reaffirma sin cambio real
-  return ALLOWED_TRANSITIONS.has([current, next]);
+  return ALLOWED_TRANSITIONS.has(`${current}->${next}`);
 }
 
 function bookingPublicShape(b) {
