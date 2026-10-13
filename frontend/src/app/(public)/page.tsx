@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import ArtistCard from '@/components/artist-card';
 import EventCard from '@/components/event-card';
+import DepthHeroLazy from '@/components/depth-hero-lazy';
 import { ApiUnavailable, EmptyState } from '@/components/api-states';
 import { serverGetList } from '@/lib/server-api';
 import type { Artist, EventItem } from '@/lib/types';
@@ -29,7 +30,8 @@ export default async function HomePage() {
     <main className="mx-auto max-w-6xl px-4 py-10">
       {/* Hero */}
       <section className="relative overflow-hidden rounded-2xl border border-[var(--depth-4)] bg-[var(--depth-2)] px-6 py-16 text-center shadow-2xl">
-        <div className="absolute inset-0 grain scanlines vignette" aria-hidden="true" />
+        <DepthHeroLazy />
+        <div className="grain scanlines vignette absolute inset-0" aria-hidden="true" />
         <div className="relative z-10">
           <p className="hud hud-accent text-sm mb-3">Sello discográfico independiente</p>
           <h1 className="text-4xl font-bold tracking-tight text-[var(--text-primary)] md:text-5xl">

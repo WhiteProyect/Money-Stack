@@ -33,6 +33,14 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body>
+        {/* Aplica el estado de efectos ANTES del hidratare (sin parpadeo):
+            fx-off si el usuario lo pidió o si el sistema pide reduced-motion. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var k='ms:fx',s=localStorage.getItem(k),r=matchMedia('(prefers-reduced-motion: reduce)').matches,e=s==='1'||(s===null&&!r);document.documentElement.classList.toggle('fx-off',!e)}catch(e){}",
+          }}
+        />
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

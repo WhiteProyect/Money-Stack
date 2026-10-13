@@ -193,6 +193,24 @@
   }
 }
 
+/* ── Efectos desactivables por el usuario (interruptor FX) ──
+   <html class="fx-off"> apaga overlays (grano/scanlines/viñeta),
+   night vision y parallax. Los componentes de efectos también lo leen
+   antes de montarse para no animar. */
+html.fx-off .grain::before,
+html.fx-off .scanlines::after,
+html.fx-off .vignette::after,
+html.fx-off .fx-overlay {
+  opacity: 0 !important;
+}
+html.fx-off .night-vision {
+  filter: none !important;
+}
+html.fx-off .parallax-slow {
+  transition: none !important;
+  transform: none !important;
+}
+
 /* ── Utilidades de acento ── */
 @layer utilities {
   .accent-border {

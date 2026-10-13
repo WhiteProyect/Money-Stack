@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import EffectsToggle from '@/components/effects-toggle';
 
 const NAV = [
   { href: '/', label: 'Inicio' },
@@ -38,6 +39,9 @@ export default function SiteHeader() {
                 </Link>
               </li>
             ))}
+            <li>
+              <EffectsToggle />
+            </li>
             <li>
               <Link
                 href="/admin"
