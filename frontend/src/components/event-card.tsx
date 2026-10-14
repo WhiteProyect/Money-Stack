@@ -1,67 +1,120 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { EventItem } from '@/lib/types';
-import { formatDate } from '@/lib/format';
 
 export default function EventCard({ event }: { event: EventItem }) {
   const headliner = event.artists.find((a) => a.isHeadliner);
   const others = event.artists.filter((a) => !a.isHeadliner);
 
+  const fallbackImage =
+    'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200&auto=format&fit=crop';
+  const cover = event.coverUrl || fallbackImage;
+
+  const dateObj = new Date(event.startsAt);
+  const day = !isNaN(dateObj.getTime()) ? dateObj.getDate() : 15;
+  const month = !isNaN(dateObj.getTime())
+    ? dateObj.toLocaleDateString('es-CO', { month: 'short' }).toUpperCase()
+    : 'NOV';
+  const time = !isNaN(dateObj.getTime())
+    ? dateObj.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
+    : '20:00';
+
   return (
     <Link
       href={`/eventos/${event.slug}`}
-      className="group block rounded-xl border border-[var(--depth-4)] bg-[var(--depth-3)] p-4 transition-transform duration-200 hover:-translate-y-1 hover:border-[var(--accent-soft)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-[#00ff87]/20 bg-[#0d1017] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#00ff87] hover:shadow-[0_15px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(0,255,135,0.2)] font-mono"
     >
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg bg-[var(--depth-2)]">
-        {event.coverUrl ? (
-          <Image
-            src={event.coverUrl}
-            alt={`Portada de ${event.title}`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          />
-        ) : (
-          <div
-            className="flex h-full items-center justify-center text-[var(--text-muted)]"
-            aria-hidden="true"
-          >
-            <svg className="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.25}>
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" />
-            </svg>
-          </div>
-        )}
-      </div>
-      <div className="mt-3">
-        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-          <time dateTime={event.startsAt}>{formatDate(event.startsAt)}</time>
-          <span aria-hidden="true">·</span>
-          <span>{event.city ?? 'Caucasia'}</span>
-          {event.status === 'CANCELLED' && (
-            <span className="rounded-full bg-[rgba(255,125,139,0.15)] px-2 py-0.5 text-[var(--color-error,#ff7d8b)]">
+      {/* Esquinas tácticas */}
+      <div className="absolute top-0 left-0 h-3 w-3 border-t border-l border-[#00ff87] z-20 pointer-events-none opacity-60 group-hover:opacity-100" />
+      <div className="absolute top-0 right-0 h-3 w-3 border-t border-r border-[#00ff87] z-20 pointer-events-none opacity-60 group-hover:opacity-100" />
+      <div className="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#00ff87] z-20 pointer-events-none opacity-60 group-hover:opacity-100" />
+      <div className="absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#00ff87] z-20 pointer-events-none opacity-60 group-hover:opacity-100" />
+
+      {/* Portada del evento estilo flyer callejero */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-black">
+        <Image
+          src={cover}
+          alt={`Portada de ${event.title}`}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105 filter grayscale contrast-125"
+        />
+        <div className="absolute inset-0 bg-[#00ff87]/10 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-color" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1017] via-[#0d1017]/40 to-black/30" />
+
+        {/* Badge de fecha estilo ticket militar */}
+        <div className="absolute top-2.5 left-2.5 flex flex-col items-center justify-center rounded bg-black/90 border border-[#00ff87]/40 px-3 py-1 shadow-md">
+          <span className="text-[9px] font-bold tracking-wider text-[#00ff87]">
+            {month}
+          </span>
+          <span className="text-xl font-black text-white leading-none">
+            {day}
+          </span>
+        </div>
+
+        {/* Estado y Precio callejero */}
+        <div className="absolute top-2.5 right-2.5 flex flex-col items-end gap-1">
+          {event.status === 'CANCELLED' ? (
+            <span className="rounded bg-red-600 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
               Cancelado
+            </span>
+          ) : (
+            <span className="rounded bg-[#00ff87] px-2 py-0.5 text-[9px] font-black text-black uppercase shadow">
+              Confirmado
+            </span>
+          )}
+
+          {event.price !== undefined && event.price !== null && (
+            <span className="rounded bg-black/90 border border-[#facc15]/40 px-2 py-0.5 text-[10px] font-bold text-[#facc15]">
+              {event.price === 0 ? 'ENTRADA LIBRE' : `$${event.price.toLocaleString('es-CO')}`}
             </span>
           )}
         </div>
-        <h3 className="mt-1 font-medium text-[var(--text-primary)]">{event.title}</h3>
-        <p className="mt-0.5 text-sm text-[var(--text-secondary)]">{event.venueName}</p>
+
+        {/* Hora y Ciudad */}
+        <div className="absolute bottom-2.5 left-2.5 flex items-center gap-2 text-[10px] text-slate-300">
+          <span className="bg-black/80 px-2 py-0.5 rounded border border-white/10 text-[#00ff87]">
+            {time} HRS
+          </span>
+          <span className="bg-black/80 px-2 py-0.5 rounded border border-white/10 text-white font-bold">
+            {event.city || 'CAUCASIA'}
+          </span>
+        </div>
+      </div>
+
+      {/* Contenido del evento */}
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="text-base font-black uppercase tracking-wider text-white group-hover:text-[#00ff87] transition-colors line-clamp-1">
+          {event.title}
+        </h3>
+        <p className="mt-1 text-xs text-slate-400 font-sans line-clamp-1">
+          📍 {event.venueName}
+        </p>
+
+        {/* Cartel / Lineup */}
         {event.artists.length > 0 && (
-          <p className="mt-1.5 text-xs text-[var(--text-muted)]">
-            {headliner && <span className="text-[var(--accent)]">{headliner.name}</span>}
-            {others.length > 0 && (
-              <>
-                {headliner && <span className="mx-1 opacity-50">·</span>}
-                {others.map((a, i) => (
-                  <span key={a.artistId}>
-                    {i > 0 && <span className="mx-1 opacity-50">·</span>}
-                    {a.name}
-                  </span>
-                ))}
-              </>
+          <div className="mt-3 pt-2.5 border-t border-white/10 flex flex-wrap items-center gap-1.5">
+            <span className="text-[9px] text-[#00ff87] uppercase font-bold mr-1">CARTEL:</span>
+            {headliner && (
+              <span className="rounded bg-[#00ff87]/20 border border-[#00ff87]/50 px-2 py-0.5 text-[9px] font-black text-[#00ff87]">
+                ★ {headliner.name}
+              </span>
             )}
-          </p>
+            {others.slice(0, 2).map((a) => (
+              <span
+                key={a.artistId}
+                className="rounded bg-black border border-white/10 px-2 py-0.5 text-[9px] text-slate-300"
+              >
+                {a.name}
+              </span>
+            ))}
+          </div>
         )}
+
+        <div className="mt-3 pt-2 flex items-center justify-between text-xs font-bold text-[#00ff87] group-hover:text-white">
+          <span className="uppercase text-[10px] tracking-wider">Ver Tarima & Boletas</span>
+          <span className="group-hover:translate-x-1 transition-transform">→</span>
+        </div>
       </div>
     </Link>
   );

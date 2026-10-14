@@ -74,7 +74,7 @@ function detailsToRecord(details: ApiErrorDetail[]): Record<string, string> {
 }
 
 const inputCls =
-  'w-full rounded-lg border border-[var(--depth-4)] bg-[var(--depth-1)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]';
+  'w-full rounded bg-black border border-[#00ff87]/30 px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:border-[#00ff87] focus:ring-1 focus:ring-[#00ff87] focus:outline-none transition-all font-mono';
 
 function Field({
   id,
@@ -208,7 +208,7 @@ export default function BookingForm({
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="rounded-2xl border border-[var(--depth-4)] bg-[var(--depth-2)] p-6 md:p-8"
+      className="rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 md:p-8 shadow-2xl font-mono"
     >
       {serverError && (
         <div
@@ -383,11 +383,11 @@ export default function BookingForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-6 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-[var(--depth-0)] shadow-[0_0_16px_var(--accent-glow)] transition-transform hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-[var(--depth-0)] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 inline-flex items-center gap-2 rounded bg-[#00ff87] px-8 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(0,255,135,0.4)] transition-all hover:bg-[#00e572] hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isSubmitting ? 'Enviando…' : 'Enviar solicitud'}
+        {isSubmitting ? 'ENVIANDO SOLICITUD…' : 'ENVIAR SOLICITUD DE BOOKING'}
         {!isSubmitting && (
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} aria-hidden="true">
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         )}

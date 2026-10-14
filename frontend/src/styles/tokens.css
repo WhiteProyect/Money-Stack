@@ -1,41 +1,55 @@
-/* ─── Money-Stack — Tokens de diseño ────────────────────────────────────────
-  Consumibles por el frontend en F0–F7. Se mantienen además como variables
-  CSS en globals.css para que el servidor (SSR) y los componentes puedan
-   usarlas sin depender de la compilación de Tailwind.
+/* ─── Money-Stack — Tokens: Dark, Callejero & Night Vision ────────────────
+   Estética callejera, underground, nocturna y táctica de Caucasia.
+   Negros profundos, asfalto, fósforo verde night-vision y acentos hazard.
 ────────────────────────────────────────────────────────────────────────────── */
 
-/* ── Paleta cromática ── */
 :root {
-  /* profundidades */
-  --depth-0: #05060a;
-  --depth-1: #0b0d14;
-  --depth-2: #13161f;
-  --depth-3: #1c2030;
-  --depth-4: #272c40;
-  --depth-5: #3a4057;
+  /* Profundidades oscuras / Asfalto & Grafito */
+  --depth-0: #040507;   /* Negro puro fondo */
+  --depth-1: #090b10;   /* Asfalto noche */
+  --depth-2: #0f131a;   /* Superficie oscura táctica */
+  --depth-3: #161c26;   /* Panel industrial */
+  --depth-4: #222b3a;   /* Borde metálico oscuro */
+  --depth-5: #323e54;   /* Líneas y detalles */
 
-  /* texto */
-  --text-primary: #eef1f6;
-  --text-secondary: #b8c0d4;
-  --text-muted: #8a92a6;
+  /* Superficies de cristal oscuro y blindado */
+  --surface-glass: rgba(15, 19, 26, 0.88);
+  --surface-glass-strong: rgba(9, 11, 16, 0.95);
+  --border-glass: rgba(0, 255, 135, 0.12);
+  --border-glass-hover: rgba(0, 255, 135, 0.5);
 
-  /* acento único */
-  --accent: #7dffb3;
-  --accent-soft: rgba(125, 255, 179, 0.12);
-  --accent-glow: rgba(125, 255, 179, 0.45);
+  /* Texto de alto contraste AA */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #8492a6;
 
-  /* estados */
-  --ok: #7dffb3;
-  --warning: #ffcf7d;
-  --error: #ff7d8b;
+  /* Acentos Night Vision (Fósforo CRT) & Callejero */
+  --accent: #00ff87;         /* Verde fosforescente night vision */
+  --accent-soft: rgba(0, 255, 135, 0.12);
+  --accent-glow: rgba(0, 255, 135, 0.5);
 
-  /* tipografía */
-  --font-display: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono',
-    'Fira Code', Menlo, Consolas, monospace;
-  --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --accent-nv: #00ff87;      /* Fósforo verde NVG */
+  --accent-nv-dim: #059669;  /* Verde oscuro militar */
+  --accent-hazard: #facc15;  /* Amarillo cinta peligro callejera */
+  --accent-rec: #ef4444;     /* Rojo REC grabación callejera */
+  --accent-cyan: #00e5ff;    /* Cian eléctrico secundario */
 
-  /* spacing */
+  /* Gradientes callejeros & Night Vision */
+  --gradient-nv: linear-gradient(135deg, #00ff87 0%, #00e5ff 100%);
+  --gradient-street: linear-gradient(135deg, #00ff87 0%, #facc15 100%);
+  --gradient-fire: linear-gradient(135deg, #facc15 0%, #ef4444 100%);
+
+  /* Estados */
+  --ok: #00ff87;
+  --warning: #facc15;
+  --error: #ef4444;
+
+  /* Tipografía */
+  --font-display: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Espaciado */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -46,16 +60,15 @@
   --space-10: 40px;
   --space-12: 48px;
 
-  /* radios */
+  /* Radios */
   --radius-sm: 4px;
   --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* transiciones */
+  /* Curvas */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 120ms;
   --duration-normal: 220ms;
-  --duration-slow: 350ms;
 }

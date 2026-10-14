@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Política de datos personales',
+  title: 'Política de Datos Personales // Money-Stack',
   description:
     'Cómo Money-Stack recoge, usa y protege tus datos personales conforme a la Ley 1581 de 2012 de Colombia.',
 };
@@ -43,24 +43,25 @@ const SECTIONS = [
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <header>
-        <p className="hud text-xs">Legal</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-          Política de datos personales
+    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 space-y-6 font-mono">
+      <header className="rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 sm:p-10 shadow-2xl">
+        <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-[#00ff87]/40 px-2.5 py-1 text-xs font-black text-[#00ff87]">
+          <span>// LEY 1581 DE 2012 // REPÚBLICA DE COLOMBIA</span>
+        </div>
+        <h1 className="mt-2 text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
+          Tratamiento de Datos Personales
         </h1>
-        <p className="mt-3 text-[var(--text-secondary)]">
-          Última actualización: octubre de 2026. Este documento describe cómo
-          tratamos tus datos personales en cumplimiento de la Ley 1581 de 2012
-          de Colombia.
+        <p className="mt-2 text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+          En Money-Stack protegemos la privacidad y los derechos de los organizadores, artistas y usuarios.
+          Revisa nuestras políticas oficiales de tratamiento y seguridad de la información.
         </p>
       </header>
 
-      <div className="mt-8 space-y-8">
+      <div className="rounded-xl border border-white/10 bg-[#090c12] p-6 sm:p-8 space-y-6">
         {SECTIONS.map((s) => (
-          <section key={s.title}>
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">{s.title}</h2>
-            <p className="mt-2 leading-relaxed text-[var(--text-secondary)]">{s.body}</p>
+          <section key={s.title} className="border-b border-white/5 pb-5 last:border-b-0 last:pb-0">
+            <h2 className="text-sm font-bold uppercase text-[#00ff87]">{s.title}</h2>
+            <p className="mt-1.5 leading-relaxed text-xs text-slate-300 font-sans">{s.body}</p>
           </section>
         ))}
       </div>

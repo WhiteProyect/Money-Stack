@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 import BookingForm from '@/components/booking-form';
-import { ApiUnavailable } from '@/components/api-states';
-import { serverGet, serverGetList, qs, ServerApiError } from '@/lib/server-api';
+import { serverGet, serverGetList, qs } from '@/lib/server-api';
 import type { Artist } from '@/lib/types';
+import { SHOWCASE_ARTISTS } from '@/lib/showcase-data';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Booking',
+  title: 'Contrataciones & Booking // Money-Stack',
   description:
-    'Solicita la contratación de un artista de Money-Stack. Cuéntanos sobre tu evento y te respondemos con tarifas y disponibilidad.',
+    'Solicita la contratación oficial de un artista de Money-Stack Discos. Cuéntanos sobre tu evento y te respondemos con tarifas oficiales, rider y disponibilidad.',
 };
 
 interface Props {
@@ -19,59 +19,64 @@ interface Props {
 export default async function BookingPage({ searchParams }: Props) {
   const sp = await searchParams;
 
-  // Catálogo de artistas contratables para el <select> (independiente del resto).
-  const catalogResult = await Promise.allSettled([
-    serverGetList<Artist>(`/artists${qs({ limit: 100 })}`),
-  ]);
-  const catalog =
-    catalogResult[0].status === 'fulfilled' ? catalogResult[0].value.data : null;
+  let bookable: { id: string; name: string }[] = [];
 
-  const bookable = (catalog ?? []).filter((a) => a.isBookable);
+  try {
+    const catalogResult = await serverGetList<Artist>(`/artists${qs({ limit: 100 })}`);
+    const catalog = catalogResult?.data ?? [];
+    const filtered = catalog.filter((a) => a.isBookable);
+    if (filtered.length > 0) {
+      bookable = filtered.map((a) => ({ id: a.id, name: a.name }));
+    } else {
+      bookable = SHOWCASE_ARTISTS.filter((a) => a.isBookable).map((a) => ({ id: a.id, name: a.name }));
+    }
+  } catch {
+    bookable = SHOWCASE_ARTISTS.filter((a) => a.isBookable).map((a) => ({ id: a.id, name: a.name }));
+  }
 
-  // Si venimos de la ficha de un artista (?artist=slug), preseleccionarlo.
   let defaultArtistId: string | null = null;
   if (sp.artist) {
-    try {
-      const artist = await serverGet<Artist>(`/artists/${encodeURIComponent(sp.artist)}`);
-      if (artist.isBookable) defaultArtistId = artist.id;
-    } catch (err) {
-      // Slug inexistente o inactivo: no bloquea el formulario.
-      if (!(err instanceof ServerApiError)) throw err;
+    const showcaseMatch = SHOWCASE_ARTISTS.find((a) => a.slug === sp.artist);
+    if (showcaseMatch) {
+      defaultArtistId = showcaseMatch.id;
+    } else {
+      try {
+        const artist = await serverGet<Artist>(`/artists/${encodeURIComponent(sp.artist)}`);
+        if (artist.isBookable) defaultArtistId = artist.id;
+      } catch {
+        // No bloquea
+      }
     }
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <header className="max-w-2xl">
-        <p className="hud hud-accent text-sm">Contratación</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--text-primary)] md:text-4xl">
-          Solicitar booking
-        </h1>
-        <p className="mt-4 text-[var(--text-secondary)]">
-          Cuéntanos sobre tu evento: fecha, ciudad, aforo y el artista que
-          tienes en mente. Revisamos cada solicitud y respondemos al correo
-          que nos dejes. Tus datos se tratan conforme a nuestra{' '}
-          <a href="/politica-de-datos" className="text-[var(--accent)] underline underline-offset-2">
-            política de datos
-          </a>{' '}
-          (Ley 1581 de Colombia).
-        </p>
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 space-y-8 font-mono">
+      <header className="relative overflow-hidden rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 sm:p-10 shadow-2xl">
+        <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2 border-[#00ff87]" />
+        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-[#00ff87]" />
+        <div className="absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2 border-[#00ff87]" />
+        <div className="absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2 border-[#00ff87]" />
+
+        <div className="relative z-10 max-w-2xl space-y-2.5">
+          <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-[#00ff87]/40 px-2.5 py-1 text-xs font-black text-[#00ff87]">
+            <span className="h-2 w-2 rounded-full bg-[#00ff87] animate-pulse" />
+            <span>// CANAL OFICIAL // CONTRATACIONES DIRECTAS</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight">
+            Solicitud de{' '}
+            <span className="text-[#00ff87] nv-glow">
+              Booking
+            </span>
+          </h1>
+          <p className="font-sans text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Completa la información de tu concierto, festival o evento.
+            Revisamos la agenda y te responderemos con disponibilidad, cotización y rider técnico en menos de 48 horas.
+          </p>
+        </div>
       </header>
 
-      <section className="mt-8" aria-label="Formulario de booking">
-        {catalog === null ? (
-          <>
-            <ApiUnavailable />
-            <div className="mt-6">
-              <BookingForm artists={[]} defaultArtistId={null} />
-            </div>
-          </>
-        ) : (
-          <BookingForm
-            artists={bookable.map((a) => ({ id: a.id, name: a.name }))}
-            defaultArtistId={defaultArtistId}
-          />
-        )}
+      <section aria-label="Formulario de booking" className="relative z-10">
+        <BookingForm artists={bookable} defaultArtistId={defaultArtistId} />
       </section>
     </div>
   );

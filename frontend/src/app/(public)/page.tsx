@@ -1,162 +1,186 @@
 import Link from 'next/link';
-import ArtistCard from '@/components/artist-card';
-import EventCard from '@/components/event-card';
-import DepthHeroLazy from '@/components/depth-hero-lazy';
-import VisorFrame from '@/components/visor-frame';
+import ElectricHero from '@/components/electric-hero';
+import MusicPlayerBar from '@/components/music-player-bar';
+import InteractiveArtistCatalog from '@/components/interactive-artist-catalog';
+import InteractiveEventAgenda from '@/components/interactive-event-agenda';
 import JsonLd from '@/components/json-ld';
-import { ApiUnavailable, EmptyState } from '@/components/api-states';
 import { serverGetList } from '@/lib/server-api';
 import { ORGANIZATION_JSONLD } from '@/lib/jsonld';
 import type { Artist, EventItem } from '@/lib/types';
+import { SHOWCASE_ARTISTS, SHOWCASE_EVENTS } from '@/lib/showcase-data';
 
-// Datos reales desde la API con revalidación periódica (ISR).
 export const revalidate = 60;
 
 export const metadata = {
-  // El layout aplica el template '%s — Money-Stack': aquí va solo la parte propia.
-  title: 'Sello discográfico independiente desde Caucasia',
+  title: 'Sello discográfico de música callejera y urbana en Caucasia',
   description:
-    'Sello discográfico independiente desde Caucasia, Antioquia. Catálogo de artistas, agenda de eventos y sistema de bookings musicales.',
+    'Money-Stack es el sello discográfico independiente del Bajo Cauca antioqueño. Trap, Afrobeat, Drill, producción musical y booking directo de artistas.',
 };
 
 export default async function HomePage() {
-  // Datos independientes: si uno falla, la otra sección sigue funcionando.
   const [artistsResult, eventsResult] = await Promise.allSettled([
-    serverGetList<Artist>('/artists?featured=true&limit=3'),
-    serverGetList<EventItem>('/events?upcoming=true&limit=3'),
+    serverGetList<Artist>('/artists?featured=true&limit=6'),
+    serverGetList<EventItem>('/events?upcoming=true&limit=6'),
   ]);
 
-  const artists = artistsResult.status === 'fulfilled' ? artistsResult.value.data : null;
-  const events = eventsResult.status === 'fulfilled' ? eventsResult.value.data : null;
+  const apiArtists = artistsResult.status === 'fulfilled' ? artistsResult.value.data : null;
+  const apiEvents = eventsResult.status === 'fulfilled' ? eventsResult.value.data : null;
+
+  const initialArtists = apiArtists && apiArtists.length > 0 ? apiArtists : SHOWCASE_ARTISTS;
+  const initialEvents = apiEvents && apiEvents.length > 0 ? apiEvents : SHOWCASE_EVENTS;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-16 sm:space-y-20">
       <JsonLd data={ORGANIZATION_JSONLD} />
 
-      {/* Hero */}
-      <VisorFrame
-        as="section"
-        label="SYS.OP // MONEY-STACK HQ"
-        telemetry="07°59'N 75°12'W // CAUCASIA, COL"
-        statusDot
-        glow
-        cornerSize="lg"
-        className="relative overflow-hidden shadow-2xl"
-        contentClassName="relative px-6 py-16 text-center"
-      >
-        <DepthHeroLazy />
-        <div className="grain scanlines vignette absolute inset-0 pointer-events-none" aria-hidden="true" />
-        <div className="relative z-10">
-          <p className="hud hud-accent text-sm mb-3">Sello discográfico independiente</p>
-          <h1 className="text-4xl font-bold tracking-tight text-[var(--text-primary)] md:text-5xl">
-            Music from the edge of the map
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-[var(--text-secondary)]">
-            Desde Caucasia, Antioquia, cultivamos talento local y conectamos
-            artistas con públicos, escenas y festivales. Catálogo, agenda y
-            reservas abiertas.
+      {/* Hero eléctrico, oscuro y callejero con visión nocturna */}
+      <ElectricHero />
+
+      {/* Reproductor de audio tipo consola / tape deck callejero */}
+      <section aria-label="Reproductor de audio del sello" className="relative z-20 -mt-6 sm:-mt-10">
+        <MusicPlayerBar />
+      </section>
+
+      {/* Catálogo interactivo de artistas con filtros en tiempo real */}
+      <section aria-labelledby="artistas-catalogo" className="space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 font-mono">
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00ff87]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00ff87] animate-pulse" />
+              <span>// ROSTER CALLEJERO // TALENTO DEL RÍO</span>
+            </div>
+            <h2 id="artistas-catalogo" className="mt-1 text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
+              El Cartel Oficial
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-400 font-sans max-w-xl">
+              Filtra por género o busca el sonido que buscas. Cada artista representa la identidad y la energía cruda del río Cauca.
+            </p>
+          </div>
+          <Link
+            href="/artistas"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00ff87] hover:underline"
+          >
+            <span>Ver cartel completo ({initialArtists.length})</span>
+            <span>→</span>
+          </Link>
+        </div>
+
+        {/* Componente interactivo con filtros y búsqueda instantánea */}
+        <InteractiveArtistCatalog initialArtists={initialArtists} />
+      </section>
+
+      {/* Próximos eventos y fechas en tarima */}
+      <section aria-labelledby="eventos-agenda" className="space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 font-mono">
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00e5ff]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00e5ff] animate-pulse" />
+              <span>// TARIMAS & FESTIVALES // SUB-808 BASS</span>
+            </div>
+            <h2 id="eventos-agenda" className="mt-1 text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
+              Agenda de Shows
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-400 font-sans max-w-xl">
+              Fechas confirmadas, sedes y boletería oficial para los eventos del sello en Caucasia, Medellín y festivales.
+            </p>
+          </div>
+          <Link
+            href="/eventos"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00e5ff] hover:underline"
+          >
+            <span>Ver calendario completo</span>
+            <span>→</span>
+          </Link>
+        </div>
+
+        {/* Componente interactivo de eventos */}
+        <InteractiveEventAgenda initialEvents={initialEvents} />
+      </section>
+
+      {/* Pilares del sello (Estructura Callejera) */}
+      <section aria-labelledby="manifiesto-sello" className="space-y-6">
+        <div className="text-center max-w-2xl mx-auto space-y-1.5 font-mono">
+          <p className="text-xs uppercase tracking-wider text-[#facc15] font-black">
+            // ESTRUCTURA & MAQUINARIA
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <h2 id="manifiesto-sello" className="text-2xl sm:text-3xl font-black text-white uppercase">
+            El Ecosistema Money-Stack
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 font-sans">
+            Más que una disquera, una plataforma independiente con sonido rudo y calidad internacional.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 font-mono">
+          <div className="rounded-xl border border-[#00ff87]/20 bg-[#0d1017] p-5 hover:border-[#00ff87] transition-all">
+            <span className="text-2xl mb-3 block">🎛️</span>
+            <h3 className="text-base font-black text-white uppercase tracking-wider">Estudio Central</h3>
+            <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
+              Consola analógica, micrófonos valvulares y mezcla calibrada para bombos 808 limpios y demoledores.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-[#00e5ff]/20 bg-[#0d1017] p-5 hover:border-[#00e5ff] transition-all">
+            <span className="text-2xl mb-3 block">📡</span>
+            <h3 className="text-base font-black text-white uppercase tracking-wider">Distribución Global</h3>
+            <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
+              Llevamos los temas a Spotify, Apple Music, TikTok y YouTube con sincronización directa de regalías.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-[#facc15]/20 bg-[#0d1017] p-5 hover:border-[#facc15] transition-all">
+            <span className="text-2xl mb-3 block">🎪</span>
+            <h3 className="text-base font-black text-white uppercase tracking-wider">Tarimas Masivas</h3>
+            <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
+              Montajes para festivales y club nights: sonido line array, pirotecnia y seguridad profesional.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-[#ef4444]/20 bg-[#0d1017] p-5 hover:border-[#ef4444] transition-all">
+            <span className="text-2xl mb-3 block">📋</span>
+            <h3 className="text-base font-black text-white uppercase tracking-wider">Booking Directo</h3>
+            <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
+              Trato directo sin intermediarios. Cotizaciones con rider técnico y contrato formal en 48 horas.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA de Contrataciones Callejeras */}
+      <section className="relative overflow-hidden rounded-2xl border border-[#00ff87]/30 bg-black p-8 sm:p-12 text-center shadow-2xl font-mono">
+        <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-[#00ff87]" />
+        <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-[#00ff87]" />
+        <div className="absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-[#00ff87]" />
+        <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-[#00ff87]" />
+
+        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+          <span className="inline-flex items-center gap-1.5 rounded bg-[#facc15] px-3 py-0.5 text-[11px] font-black uppercase text-black">
+            ⚡ RESERVAS 2026-2027 // TRATO DIRECTO
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
+            ¿Organizas un concierto, feria o festival?
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+            Contrata a los artistas del Bajo Cauca con riders oficiales, prueba de sonido y respuesta ágil.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center gap-3">
             <Link
-              href="/artistas"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-[var(--depth-0)] shadow-[0_0_16px_var(--accent-glow)] transition-transform hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-[var(--depth-0)]"
+              href="/booking"
+              className="inline-flex items-center gap-2 rounded bg-[#00ff87] px-7 py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(0,255,135,0.4)] hover:bg-[#00e572] transition-all"
             >
-              Ver artistas
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} aria-hidden="true">
+              <span>Solicitar Booking de Artistas</span>
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </Link>
             <Link
-              href="/eventos"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--depth-4)] px-5 py-2.5 text-sm font-medium text-[var(--text-primary)] transition-transform hover:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+              href="/el-sello"
+              className="inline-flex items-center gap-2 rounded border border-[#00ff87]/40 bg-black px-6 py-3 text-xs font-bold uppercase tracking-wider text-[#00ff87] hover:bg-[#00ff87]/10 transition-all"
             >
-              Próximos eventos
+              <span>Conoce el Sello</span>
             </Link>
           </div>
         </div>
-      </VisorFrame>
-
-      {/* Próximos eventos */}
-      <section className="mt-14" aria-labelledby="eventos-destacados">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="hud text-xs">Agenda</p>
-            <h2 id="eventos-destacados" className="mt-1 text-xl font-semibold text-[var(--text-primary)]">
-              Próximos eventos
-            </h2>
-          </div>
-          <Link
-            href="/eventos"
-            className="rounded-full bg-[var(--accent-soft)] px-4 py-1.5 text-sm text-[var(--accent)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--depth-0)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
-          >
-            Ver todos
-          </Link>
-        </div>
-        <div className="mt-4">
-          {events === null ? (
-            <ApiUnavailable />
-          ) : events.length === 0 ? (
-            <EmptyState title="No hay eventos publicados" hint="Pronto anunciaremos nuevas fechas. Suscríbete a nuestras redes." />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {events.map((evt) => (
-                <EventCard key={evt.id} event={evt} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Artistas destacados */}
-      <section className="mt-14" aria-labelledby="artistas-destacados">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="hud text-xs">Catálogo</p>
-            <h2 id="artistas-destacados" className="mt-1 text-xl font-semibold text-[var(--text-primary)]">
-              Artistas destacados
-            </h2>
-          </div>
-          <Link
-            href="/artistas"
-            className="rounded-full bg-[var(--accent-soft)] px-4 py-1.5 text-sm text-[var(--accent)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--depth-0)] focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
-          >
-            Explorar catálogo
-          </Link>
-        </div>
-        <div className="mt-4">
-          {artists === null ? (
-            <ApiUnavailable />
-          ) : artists.length === 0 ? (
-            <EmptyState title="El catálogo está en preparación" hint="Muy pronto publicaremos nuestros artistas." />
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {artists.map((a) => (
-                <ArtistCard key={a.id} artist={a} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* CTA booking */}
-      <section className="mt-16 rounded-xl border border-[var(--depth-4)] bg-[var(--depth-2)] p-8 text-center">
-        <p className="hud hud-accent text-sm">Contratación</p>
-        <h2 className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">
-          ¿Quieres contratar a un artista?
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-[var(--text-secondary)]">
-          Envía una solicitud con los detalles de tu evento. Revisamos cada
-          petición y respondemos en los próximos días.
-        </p>
-        <Link
-          href="/booking"
-          className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-medium text-[var(--depth-0)] shadow-[0_0_16px_var(--accent-glow)] transition-transform hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-[var(--depth-0)]"
-        >
-          Solicitar booking
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} aria-hidden="true">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </Link>
       </section>
     </div>
   );

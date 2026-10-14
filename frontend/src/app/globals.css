@@ -1,53 +1,40 @@
-/* ─── Money-Stack — F0 Style tile (Tailwind CSS v4) ─────────────────────────
-   Tokens visuales, tipografía y efectos base: depth map / night vision.
-   Reglas:
-   - Contraste AA en textos ≥ 4.5:1 (verificado con las variables de color).
-   - Efectos desactivables y respetuosos de prefers-reduced-motion.
-   - Un solo acento fosforescente en toda la paleta.
+/* ─── Money-Stack — Estética Dark, Callejero & Night Vision ────────────────
+   Diseño underground, rudo, callejero y táctico para sello discográfico
+   con fósforo verde night-vision, cinta hazard y negros asfalto profundos.
 ────────────────────────────────────────────────────────────────────────────── */
 
 @import "tailwindcss/index.css";
-/* Variables --accent, --depth-*, --text-* usadas por los componentes */
 @import "../styles/tokens.css";
 
 @layer theme {
   @theme {
-    /* ── Fondo / superficie (dark depth map) ── */
-    --color-depth-0: #05060a;   /* fondo más oscuro (profundidad extrema) */
-    --color-depth-1: #0b0d14;   /* superficie primaria */
-    --color-depth-2: #13161f;   /* superficie elevada */
-    --color-depth-3: #1c2030;   /* panel / cards */
-    --color-depth-4: #272c40;   /* bordes sutiles */
-    --color-depth-5: #3a4057;   /* texto secundario permitido con contraste */
+    /* ── Superficies oscuras / Asfalto & Grafito ── */
+    --color-depth-0: #040507;
+    --color-depth-1: #090b10;
+    --color-depth-2: #0f131a;
+    --color-depth-3: #161c26;
+    --color-depth-4: #222b3a;
+    --color-depth-5: #323e54;
 
-    /* ── Texto ── */
-    --color-text-primary: #eef1f6;  /* texto principal: contrasta con depth-1 (≥7:1) */
-    --color-text-secondary: #b8c0d4; /* texto secundario (contrasta con depth-1 ≈ 5.4:1) */
-    --color-text-muted: #8a92a6;     /* etiquetas/ayudas (contraste ≥ 5:1 sobre depth-1..3) */
+    /* ── Texto de alto contraste ── */
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #8492a6;
 
-    /* ── Acsentos ── */
-    --color-accent: #7dffb3;         /* fosforescente, monocromo con tinte verde-menta */
-    --color-accent-dim: rgba(125, 255, 179, 0.12);
-    --color-accent-glow: rgba(125, 255, 179, 0.45);
+    /* ── Acentos Night Vision & Callejero ── */
+    --color-accent: #00ff87;
+    --color-accent-dim: rgba(0, 255, 135, 0.14);
+    --color-accent-glow: rgba(0, 255, 135, 0.5);
 
-    /* ── Estados ── */
-    --color-success: #7dffb3;
-    --color-warning: #ffcf7d;
-    --color-error: #ff7d8b;
+    --color-accent-nv: #00ff87;
+    --color-accent-hazard: #facc15;
+    --color-accent-rec: #ef4444;
+    --color-accent-cyan: #00e5ff;
 
     /* ── Tipografía ── */
-    --font-display: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
-      "Fira Code", Menlo, Consolas, monospace;
-    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-
-    /* ── Efectos night vision (anulables por componentes) ── */
-    --grain-opacity: 0.06;
-    --scanline-opacity: 0.18;
-    --vignette-opacity: 0.55;
-    --nightvision-hue: 135deg;       /* verde fosforescente */
-    --nightvision-sat: 60%;
-    --nightvision-light: 25%;
+    --font-display: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
 }
 
@@ -65,29 +52,36 @@
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
+    background-color: var(--color-depth-0);
   }
 
   body {
-    background-color: var(--color-depth-1);
+    background-color: var(--color-depth-0);
+    background-image: 
+      radial-gradient(ellipse 90% 40% at 50% -10%, rgba(0, 255, 135, 0.09), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 90% 70%, rgba(0, 229, 255, 0.04), transparent 60%),
+      radial-gradient(ellipse 50% 30% at 10% 85%, rgba(250, 204, 21, 0.03), transparent 60%);
+    background-attachment: fixed;
     color: var(--color-text-primary);
     font-family: var(--font-body);
-    line-height: 1.55;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
   }
 
-  /* Textos HUD en monoespaciada con tinte acentuado */
+  /* Textos HUD / Callejero / Stencil */
   .hud {
-    font-family: var(--font-display);
-    letter-spacing: 0.04em;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
   .hud-accent {
-    color: var(--color-accent);
-    text-shadow: 0 0 6px var(--color-accent-glow);
+    color: var(--color-accent-nv);
+    text-shadow: 0 0 12px var(--color-accent-glow);
   }
 
   /* Enlaces */
@@ -96,216 +90,143 @@
     text-decoration: none;
   }
 
-  /* Focus visible para accesibilidad */
+  /* Focus visible táctico */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-accent-nv);
+    outline-offset: 3px;
   }
 
-  /* Scrollbar oscura */
+  /* Scrollbar oscura industrial */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-depth-0);
+    background: #040507;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-depth-4);
-    border-radius: 8px;
+    background: #222b3a;
+    border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-depth-5);
+    background: #00ff87;
   }
 
-  /* Selection */
+  /* Selección de texto fósforo verde */
   ::selection {
-    background: var(--color-accent-dim);
-    color: var(--color-text-primary);
+    background: rgba(0, 255, 135, 0.35);
+    color: #ffffff;
   }
 }
 
-/* ── Efectos night vision (capas decorativas, desactivables) ── */
-@layer base {
-  .night-vision {
-    filter: saturate(var(--nightvision-sat, 60%)) hue-rotate(var(--nightvision-hue, 135deg))
-      brightness(var(--nightvision-light, 1.2));
+/* ── Utilidades Dark, Callejero & Night Vision ── */
+@layer utilities {
+  /* Resplandor Fósforo Verde Night Vision */
+  .nv-glow {
+    text-shadow: 0 0 10px rgba(0, 255, 135, 0.7), 0 0 20px rgba(0, 255, 135, 0.35);
   }
 
-  /* Grano (ruido) */
-  .grain {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-  }
-  .grain::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-    opacity: var(--grain-opacity, 0.06);
-    mix-blend-mode: overlay;
-    pointer-events: none;
-    z-index: 1;
+  .nv-box-glow {
+    box-shadow: 0 0 25px -4px rgba(0, 255, 135, 0.4), 0 0 10px -2px rgba(0, 255, 135, 0.2);
   }
 
-  /* Líneas de escaneo — usa ::before para convivir con ::after de .vignette */
-  .scanlines::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .hazard-glow {
+    box-shadow: 0 0 20px -4px rgba(250, 204, 21, 0.4);
+  }
+
+  /* Tarjeta Callejera / Night Vision blindada */
+  .nv-card {
+    background: rgba(15, 19, 26, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 255, 135, 0.15);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nv-card:hover {
+    background: rgba(22, 28, 38, 0.95);
+    border-color: rgba(0, 255, 135, 0.5);
+    box-shadow: 0 14px 36px -8px rgba(0, 0, 0, 0.8), 0 0 20px -4px rgba(0, 255, 135, 0.25);
+    transform: translateY(-3px);
+  }
+
+  /* Texto degradado Street & Night Vision */
+  .text-gradient-nv {
+    background: linear-gradient(135deg, #00ff87 0%, #00e5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-street {
+    background: linear-gradient(135deg, #ffffff 0%, #00ff87 60%, #facc15 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-hazard {
+    background: linear-gradient(135deg, #facc15 0%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Patrón de líneas Hazard callejeras / Cinta peligro */
+  .hazard-tape {
     background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.28) 0px,
-      rgba(0, 0, 0, 0.28) 1px,
-      transparent 1px,
-      transparent 3px
+      -45deg,
+      #facc15 0,
+      #facc15 10px,
+      #000000 10px,
+      #000000 20px
     );
-    opacity: var(--scanline-opacity, 0.18);
-    pointer-events: none;
-    z-index: 2;
   }
 
-  /* Viñeta — usa ::after con degradado suave hacia los bordes */
-  .vignette::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 65%, rgba(5, 6, 10, 0.65) 100%);
-    opacity: var(--vignette-opacity, 0.5);
-    pointer-events: none;
-    z-index: 3;
+  /* Cuadrícula táctica / Retícula militar nocturna */
+  .tactical-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 135, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 135, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
+
+  /* Grabación callejera REC ● parpadeante */
+  @keyframes rec-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+  .animate-rec {
+    animation: rec-blink 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Barras VU meter / Frecuencias callejeras */
+  @keyframes vu-green-1 {
+    0%, 100% { height: 20%; }
+    50% { height: 95%; }
+  }
+  @keyframes vu-green-2 {
+    0%, 100% { height: 75%; }
+    50% { height: 30%; }
+  }
+  @keyframes vu-green-3 {
+    0%, 100% { height: 40%; }
+    50% { height: 100%; }
+  }
+  @keyframes vu-green-4 {
+    0%, 100% { height: 85%; }
+    50% { height: 25%; }
+  }
+
+  .vu-1 { animation: vu-green-1 0.75s ease-in-out infinite; }
+  .vu-2 { animation: vu-green-2 0.6s ease-in-out infinite; }
+  .vu-3 { animation: vu-green-3 0.85s ease-in-out infinite; }
+  .vu-4 { animation: vu-green-4 0.7s ease-in-out infinite; }
 }
 
-/* ── Efecto de profundidad (parallax suave, solo si no hay reduced-motion) ── */
-@layer utilities {
-  @media (prefers-reduced-motion: no-preference) {
-    .parallax-slow {
-      will-change: transform;
-      transition: transform 0.35s ease-out;
-    }
-  }
-
-  /* Marcos visor tácticos */
-  .visor-bracket {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border-color: var(--color-accent);
-    pointer-events: none;
-  }
-  .visor-bracket-tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
-  .visor-bracket-tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; }
-  .visor-bracket-bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; }
-  .visor-bracket-br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
-}
-
-/* ── Ajuste de contraste para modo reduced-motion ── */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .grain,
-  .grain::before,
-  .scanlines::before,
-  .scanlines::after,
-  .vignette::before,
-  .vignette::after,
-  .fx-overlay {
-    opacity: 0 !important;
-    background-image: none !important;
-  }
-}
-
-/* ── Efectos desactivables por el usuario (interruptor FX) ──
-   <html class="fx-off"> apaga overlays (grano/scanlines/viñeta),
-   night vision y parallax. Los componentes de efectos también lo leen
-   antes de montarse para no animar. */
-html.fx-off .grain,
-html.fx-off .grain::before,
-html.fx-off .scanlines::before,
-html.fx-off .scanlines::after,
-html.fx-off .vignette::before,
-html.fx-off .vignette::after,
-html.fx-off .fx-overlay {
-  opacity: 0 !important;
-  background-image: none !important;
-}
-html.fx-off .night-vision {
-  filter: none !important;
-}
-html.fx-off .parallax-slow {
-  transition: none !important;
-  transform: none !important;
-}
-
-/* ── Utilidades de acento ── */
-@layer utilities {
-  .accent-border {
-    border-color: var(--color-accent-dim);
-  }
-  .accent-ring {
-    box-shadow: 0 0 0 1px var(--color-accent-dim), 0 0 12px var(--color-accent-glow);
-  }
-  .text-accent {
-    color: var(--color-accent);
-  }
-  .bg-accent-soft {
-    background-color: var(--color-accent-dim);
-  }
-  .bg-surface {
-    background-color: var(--color-depth-3);
-  }
-  .bg-surface-2 {
-    background-color: var(--color-depth-2);
-  }
-  .border-surface {
-    border-color: var(--color-depth-4);
-  }
-  .text-muted {
-    color: var(--color-text-muted);
-  }
-
-  /* Animaciones callejeras y de consola */
-  @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  @keyframes marquee-scroll {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-50%); }
-  }
-  @keyframes scanbeam-laser {
-    0% { transform: translateY(-100%); opacity: 0; }
-    50% { opacity: 0.7; }
-    100% { transform: translateY(600px); opacity: 0; }
-  }
-  @keyframes vu-bounce {
-    0%, 100% { height: 15%; }
-    25% { height: 85%; }
-    50% { height: 40%; }
-    75% { height: 95%; }
-  }
-  @keyframes neon-pulse {
-    0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px rgba(125,255,179,0.7)); }
-    50% { opacity: 0.85; filter: drop-shadow(0 0 4px rgba(125,255,179,0.3)); }
-  }
-
-  .animate-spin-slow {
-    animation: spin-slow 14s linear infinite;
-  }
-  .animate-spin-fast {
-    animation: spin-slow 5s linear infinite;
-  }
-  .animate-marquee {
-    display: flex;
-    width: max-content;
-    animation: marquee-scroll 24s linear infinite;
-  }
-  .animate-scanbeam {
-    animation: scanbeam-laser 3.5s ease-in-out infinite;
-  }
-  .animate-neon {
-    animation: neon-pulse 3s ease-in-out infinite;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
