@@ -54,7 +54,10 @@ const env = parsed.data;
 module.exports = {
   ...env,
   isProd: env.NODE_ENV === 'production',
-  corsOrigins: env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean),
+  corsOrigins: [
+    ...env.CORS_ORIGINS.split(',').map((o) => o.trim()).filter(Boolean),
+    ...(env.NODE_ENV !== 'production' ? ['http://localhost:3000', 'http://127.0.0.1:3000'] : []),
+  ],
   accessTtlSeconds: parseDuration(env.JWT_ACCESS_EXPIRES_IN) / 1000,
   refreshTtlMs: parseDuration(env.JWT_REFRESH_EXPIRES_IN),
 };

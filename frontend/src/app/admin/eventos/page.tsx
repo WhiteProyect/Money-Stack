@@ -57,144 +57,204 @@ export default function AdminEventsPage() {
   }
 
   return (
-    <div>
-      <header className="flex flex-wrap items-end justify-between gap-3">
+    <div className="space-y-6">
+      {/* ── Cabecera ── */}
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="hud text-xs">EDITOR+</p>
-          <h1 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">Eventos</h1>
+          <div className="flex items-center gap-2 font-mono text-xs text-[#94a3b8]">
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            <span className="uppercase tracking-widest">NIVEL REQUERIDO: EDITOR+</span>
+          </div>
+          <h1 className="mt-1 font-mono text-2xl font-black uppercase tracking-tight text-white sm:text-3xl">
+            AGENDA DE EVENTOS Y SHOWS
+          </h1>
+          <p className="mt-1 text-xs text-[#94a3b8]">
+            Conciertos, festivales, presentaciones en vivo y gestión de cartelera de artistas.
+          </p>
         </div>
+
         <Link
           href="/admin/eventos/nuevo"
-          className="rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-[var(--depth-0)] transition-transform hover:scale-[1.02]"
+          className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-white transition-all hover:bg-white hover:text-black"
         >
-          + Nuevo evento
+          <span>+ Nuevo Evento</span>
         </Link>
-      </header>
-
-      <div className="mt-5 flex flex-wrap items-end gap-3">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="f-status" className="hud text-xs">Estado</label>
-          <select
-            id="f-status"
-            value={status}
-            onChange={(e) => setParam('status', e.target.value)}
-            className="rounded-lg border border-[var(--depth-4)] bg-[var(--depth-1)] px-3 py-2 text-sm"
-          >
-            <option value="">Todos</option>
-            {Object.entries(STATUS_LABEL).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="f-when" className="hud text-xs">Momento</label>
-          <select
-            id="f-when"
-            value={when}
-            onChange={(e) => setParam('when', e.target.value)}
-            className="rounded-lg border border-[var(--depth-4)] bg-[var(--depth-1)] px-3 py-2 text-sm"
-          >
-            <option value="">Todos</option>
-            <option value="upcoming">Próximos</option>
-            <option value="past">Pasados</option>
-          </select>
-        </div>
-        {(status || when) && (
-          <button
-            type="button"
-            onClick={() => router.replace('/admin/eventos')}
-            className="rounded-full border border-[var(--depth-4)] px-4 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:border-[var(--accent)]"
-          >
-            Limpiar
-          </button>
-        )}
       </div>
 
+      {/* ── Barra de Filtros ── */}
+      <div className="rounded-2xl border border-[#202736] bg-[#090b12] p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="w-44">
+            <label htmlFor="f-status" className="block font-mono text-[10px] uppercase tracking-wider text-[#94a3b8] mb-1">
+              // ESTADO DEL EVENTO
+            </label>
+            <select
+              id="f-status"
+              value={status}
+              onChange={(e) => setParam('status', e.target.value)}
+              className="w-full rounded-xl border border-[#202736] bg-[#05070c] px-3 py-2 font-mono text-xs text-white focus:border-white focus:outline-none"
+            >
+              <option value="">Todos los estados</option>
+              {Object.entries(STATUS_LABEL).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="w-40">
+            <label htmlFor="f-when" className="block font-mono text-[10px] uppercase tracking-wider text-[#94a3b8] mb-1">
+              // TEMPORALIDAD
+            </label>
+            <select
+              id="f-when"
+              value={when}
+              onChange={(e) => setParam('when', e.target.value)}
+              className="w-full rounded-xl border border-[#202736] bg-[#05070c] px-3 py-2 font-mono text-xs text-white focus:border-white focus:outline-none"
+            >
+              <option value="">Todas las fechas</option>
+              <option value="upcoming">Próximos en vivo</option>
+              <option value="past">Shows pasados</option>
+            </select>
+          </div>
+
+          {(status || when) && (
+            <button
+              type="button"
+              onClick={() => router.replace('/admin/eventos')}
+              className="rounded-xl border border-[#202736] bg-[#121620] px-4 py-2 font-mono text-xs text-[#cbd5e1] hover:text-white"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Aviso de Error ── */}
       {error && (
-        <p role="alert" className="mt-4 rounded-lg border border-[var(--color-error,#ff7d8b)] bg-[rgba(255,125,139,0.08)] p-3 text-sm">
+        <div
+          role="alert"
+          className="rounded-xl border border-red-500/40 bg-red-500/10 p-3.5 font-mono text-xs text-red-200"
+        >
           {error}
-        </p>
+        </div>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-[var(--depth-4)]">
-        <table className="w-full min-w-[680px] text-sm">
-          <thead className="bg-[var(--depth-2)]">
-            <tr className="text-left">
-              <th scope="col" className="hud px-4 py-3 text-[10px]">Evento</th>
-              <th scope="col" className="hud px-4 py-3 text-[10px]">Fecha</th>
-              <th scope="col" className="hud px-4 py-3 text-[10px]">Lugar</th>
-              <th scope="col" className="hud px-4 py-3 text-[10px]">Cartel</th>
-              <th scope="col" className="hud px-4 py-3 text-[10px]">Estado</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--depth-4)]">
-            {loading ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-[var(--text-muted)]">Cargando…</td>
+      {/* ── Tabla de Eventos ── */}
+      <div className="overflow-hidden rounded-2xl border border-[#202736] bg-[#080a10] shadow-xl">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[680px] text-left">
+            <thead className="border-b border-[#202736] bg-[#0c0f17]">
+              <tr className="font-mono text-[10px] uppercase tracking-wider text-[#94a3b8]">
+                <th scope="col" className="px-5 py-3.5">Evento / Slug</th>
+                <th scope="col" className="px-5 py-3.5">Fecha y Hora</th>
+                <th scope="col" className="px-5 py-3.5">Locación</th>
+                <th scope="col" className="px-5 py-3.5">Cartel de Artistas</th>
+                <th scope="col" className="px-5 py-3.5">Estado</th>
+                <th scope="col" className="px-5 py-3.5 text-right">Acción</th>
               </tr>
-            ) : !data || data.data.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-[var(--text-secondary)]">
-                  No hay eventos con esos filtros.
-                </td>
-              </tr>
-            ) : (
-              data.data.map((e) => (
-                <tr key={e.id} className="bg-[var(--depth-1)] transition-colors hover:bg-[var(--depth-2)]">
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/eventos/${e.id}`} className="font-medium text-[var(--text-primary)] transition-colors hover:text-[var(--accent)]">
-                      {e.title}
-                    </Link>
-                    <p className="text-xs text-[var(--text-muted)]">/{e.slug}</p>
-                  </td>
-                  <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(e.startsAt)}</td>
-                  <td className="px-4 py-3 text-[var(--text-secondary)]">
-                    {e.venueName}
-                    {e.city && <p className="text-xs text-[var(--text-muted)]">{e.city}</p>}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/eventos/${e.id}#cartel`} className="hud text-xs transition-colors hover:text-[var(--accent)]">
-                      {e.artists.length} artista{e.artists.length === 1 ? '' : 's'}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`hud rounded-full px-2.5 py-0.5 text-[10px] ${
-                        e.status === 'PUBLISHED'
-                          ? 'bg-[rgba(125,255,179,0.15)] text-[var(--accent)]'
-                          : e.status === 'CANCELLED'
-                            ? 'bg-[rgba(255,125,139,0.15)] text-[var(--color-error,#ff7d8b)]'
-                            : 'bg-[var(--depth-4)] text-[var(--text-muted)]'
-                      }`}
-                    >
-                      {STATUS_LABEL[e.status]}
-                    </span>
+            </thead>
+            <tbody className="divide-y divide-[#202736]">
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-12 text-center font-mono text-xs text-[#94a3b8]">
+                    Sincronizando agenda con base de datos…
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : !data || data.data.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-12 text-center">
+                    <p className="font-mono text-sm font-bold uppercase text-white">
+                      No se encontraron eventos
+                    </p>
+                    <p className="mt-1 text-xs text-[#94a3b8]">
+                      Prueba ajustando los filtros o registra una nueva fecha en el calendario del sello.
+                    </p>
+                    <Link
+                      href="/admin/eventos/nuevo"
+                      className="mt-4 inline-block rounded-xl border border-white/20 bg-white/10 px-4 py-2 font-mono text-xs font-bold uppercase text-white hover:bg-white hover:text-black"
+                    >
+                      + Programar Primer Evento
+                    </Link>
+                  </td>
+                </tr>
+              ) : (
+                data.data.map((e) => (
+                  <tr key={e.id} className="transition-colors hover:bg-[#0e121a]">
+                    <td className="px-5 py-3.5">
+                      <Link
+                        href={`/admin/eventos/${e.id}`}
+                        className="font-mono text-sm font-bold text-white transition-colors hover:text-[#cbd5e1]"
+                      >
+                        {e.title}
+                      </Link>
+                      <p className="font-mono text-[10px] text-[#64748b]">/{e.slug}</p>
+                    </td>
+                    <td className="px-5 py-3.5 font-mono text-xs text-[#cbd5e1]">
+                      {formatDate(e.startsAt)}
+                    </td>
+                    <td className="px-5 py-3.5 font-mono text-xs text-[#cbd5e1]">
+                      <p className="font-bold text-white">{e.venueName}</p>
+                      {e.city && <p className="text-[10px] text-[#94a3b8]">{e.city}</p>}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <Link
+                        href={`/admin/eventos/${e.id}#cartel`}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-[#202736] bg-[#121620] px-2.5 py-1 font-mono text-xs text-[#cbd5e1] hover:border-white hover:text-white"
+                      >
+                        <span>{e.artists.length} artista{e.artists.length === 1 ? '' : 's'}</span>
+                      </Link>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span
+                        className={`inline-block rounded-md px-2.5 py-0.5 font-mono text-[10px] font-bold ${
+                          e.status === 'PUBLISHED'
+                            ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+                            : e.status === 'CANCELLED'
+                              ? 'border border-red-500/30 bg-red-500/10 text-red-400'
+                              : 'border border-[#202736] bg-[#121620] text-[#94a3b8]'
+                        }`}
+                      >
+                        {STATUS_LABEL[e.status]}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3.5 text-right font-mono">
+                      <Link
+                        href={`/admin/eventos/${e.id}`}
+                        className="inline-flex items-center gap-1 text-xs text-[#94a3b8] hover:text-white"
+                      >
+                        <span>Gestionar</span>
+                        <span>→</span>
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
+      {/* ── Paginación ── */}
       {data && data.pagination.totalPages > 1 && (
-        <nav aria-label="Paginación" className="mt-6 flex items-center justify-center gap-4">
+        <nav aria-label="Paginación" className="flex items-center justify-center gap-4 font-mono text-xs">
           <button
             type="button"
             disabled={data.pagination.page <= 1}
             onClick={() => setParam('page', String(data.pagination.page - 1))}
-            className="rounded-full border border-[var(--depth-4)] px-4 py-1.5 text-sm text-[var(--text-secondary)] disabled:opacity-40"
+            className="rounded-xl border border-[#202736] bg-[#0c0f17] px-4 py-2 text-[#cbd5e1] transition-colors hover:border-white hover:text-white disabled:opacity-30 disabled:pointer-events-none"
           >
             ← Anteriores
           </button>
-          <span className="hud text-xs">
-            Página {data.pagination.page} de {data.pagination.totalPages}
+          <span className="text-[#94a3b8]">
+            PÁGINA {data.pagination.page} DE {data.pagination.totalPages}
           </span>
           <button
             type="button"
             disabled={data.pagination.page >= data.pagination.totalPages}
             onClick={() => setParam('page', String(data.pagination.page + 1))}
-            className="rounded-full border border-[var(--depth-4)] px-4 py-1.5 text-sm text-[var(--text-secondary)] disabled:opacity-40"
+            className="rounded-xl border border-[#202736] bg-[#0c0f17] px-4 py-2 text-[#cbd5e1] transition-colors hover:border-white hover:text-white disabled:opacity-30 disabled:pointer-events-none"
           >
             Siguientes →
           </button>
