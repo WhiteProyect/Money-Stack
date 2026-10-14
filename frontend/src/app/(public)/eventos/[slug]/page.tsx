@@ -95,22 +95,22 @@ export default async function EventPage({ params }: Props) {
 
       {/* Migas de pan estilo terminal */}
       <nav aria-label="Migas de pan" className="flex items-center gap-2 text-xs text-slate-400">
-        <Link href="/" className="hover:text-[#00ff87] transition-colors">
+        <Link href="/" className="hover:text-white transition-colors">
           INICIO
         </Link>
         <span>/</span>
-        <Link href="/eventos" className="hover:text-[#00ff87] transition-colors">
+        <Link href="/eventos" className="hover:text-white transition-colors">
           EVENTOS
         </Link>
         <span>/</span>
-        <span className="text-[#00ff87] font-bold">{event.title.toUpperCase()}</span>
+        <span className="text-white font-bold">{event.title.toUpperCase()}</span>
       </nav>
 
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Columna principal */}
         <div className="lg:col-span-8 space-y-6">
-          {/* Portada grande con efecto táctico */}
-          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-[#00ff87]/30 bg-black shadow-2xl">
+          {/* Portada grande con efecto táctico en titanio */}
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-white/15 bg-black shadow-2xl">
             <Image
               src={cover}
               alt={`Portada de ${event.title}`}
@@ -118,7 +118,6 @@ export default async function EventPage({ params }: Props) {
               priority
               className="object-cover filter grayscale contrast-125"
             />
-            <div className="absolute inset-0 bg-[#00ff87]/10 mix-blend-color" />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
@@ -131,7 +130,7 @@ export default async function EventPage({ params }: Props) {
                   CANCELADO
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 rounded bg-[#00ff87] px-2.5 py-1 text-[10px] font-black text-black">
+                <span className="inline-flex items-center gap-1.5 rounded bg-white px-2.5 py-1 text-[10px] font-black text-black shadow-[0_0_12px_rgba(255,255,255,0.4)]">
                   <span className="h-2 w-2 rounded-full bg-black animate-ping" />
                   FECHA CONFIRMADA
                 </span>
@@ -144,7 +143,7 @@ export default async function EventPage({ params }: Props) {
             <h1 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
               {event.title}
             </h1>
-            <p className="text-xs sm:text-sm text-[#00ff87] font-bold">
+            <p className="text-xs sm:text-sm text-slate-300 font-bold">
               {formatDateRange(event.startsAt, event.endsAt)} · {event.venueName}
               {event.city ? `, ${event.city.toUpperCase()}` : ''}
             </p>
@@ -152,8 +151,8 @@ export default async function EventPage({ params }: Props) {
 
           {/* Descripción */}
           {event.description && (
-            <section className="rounded-xl border border-[#00ff87]/20 bg-[#090c12] p-6 space-y-2">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
+            <section className="rounded-xl border border-white/10 bg-[#07090e] p-6 space-y-2">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
                 // SOBRE EL SHOW
               </h2>
               <p className="font-sans whitespace-pre-line leading-relaxed text-xs sm:text-sm text-slate-300">
@@ -164,8 +163,8 @@ export default async function EventPage({ params }: Props) {
 
           {/* Cartel / Lineup Oficial */}
           {lineup.length > 0 && (
-            <section className="rounded-xl border border-[#00ff87]/20 bg-[#090c12] p-6 space-y-3">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#00ff87]">
+            <section className="rounded-xl border border-white/10 bg-[#07090e] p-6 space-y-3">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-200">
                 // CARTEL EN TARIMA
               </h2>
               <ul className="grid gap-3 sm:grid-cols-2">
@@ -173,16 +172,16 @@ export default async function EventPage({ params }: Props) {
                   <li key={a.artistId}>
                     <Link
                       href={`/artistas/${a.slug}`}
-                      className="flex items-center justify-between gap-2.5 rounded border border-white/10 bg-black/80 p-3 hover:border-[#00ff87] transition-all"
+                      className="flex items-center justify-between gap-2.5 rounded border border-white/10 bg-black/80 p-3 hover:border-white/40 transition-all"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-6 w-6 items-center justify-center rounded bg-[#0d1017] text-[10px] font-black text-[#00ff87]">
+                        <span className="flex h-6 w-6 items-center justify-center rounded bg-[#121722] text-[10px] font-black text-white">
                           {String(i + 1).padStart(2, '0')}
                         </span>
                         <span className="font-bold text-xs text-white uppercase">{a.name}</span>
                       </div>
                       {a.isHeadliner && (
-                        <span className="rounded bg-[#00ff87] px-2 py-0.5 text-[9px] font-black text-black">
+                        <span className="rounded bg-white px-2 py-0.5 text-[9px] font-black text-black">
                           HEADLINER
                         </span>
                       )}
@@ -196,14 +195,14 @@ export default async function EventPage({ params }: Props) {
 
         {/* Panel lateral de entradas */}
         <aside className="lg:col-span-4">
-          <div className="sticky top-20 rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 shadow-2xl space-y-5">
+          <div className="sticky top-20 rounded-xl border border-white/15 bg-[#07090e] p-6 shadow-2xl space-y-5">
             <div>
-              <p className="text-[11px] font-bold uppercase text-[#facc15]">
+              <p className="text-[11px] font-bold uppercase text-slate-400">
                 // BOLETERÍA OFICIAL
               </p>
               <div className="mt-1.5 flex items-baseline justify-between">
                 <span className="text-xs text-slate-400">ENTRADA:</span>
-                <span className="text-2xl font-black text-[#00ff87] nv-glow">
+                <span className="text-2xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                   {formatPrice(event.price)}
                 </span>
               </div>
@@ -227,7 +226,7 @@ export default async function EventPage({ params }: Props) {
                   href={event.ticketUrl || 'https://tuboleta.com'}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="w-full inline-flex items-center justify-center gap-2 rounded bg-[#00ff87] py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_15px_rgba(0,255,135,0.4)] hover:bg-[#00e572] transition-all"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded bg-white py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:bg-slate-200 transition-all active:scale-95"
                 >
                   <span>Comprar Entradas Online</span>
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
@@ -239,7 +238,7 @@ export default async function EventPage({ params }: Props) {
               {headliner && (
                 <Link
                   href={`/booking?artist=${headliner.slug}`}
-                  className="w-full inline-flex items-center justify-center rounded border border-[#00ff87]/30 bg-black py-2.5 text-[11px] font-bold uppercase text-slate-300 hover:border-[#00ff87] hover:text-[#00ff87] transition-all"
+                  className="w-full inline-flex items-center justify-center rounded border border-white/20 bg-black py-2.5 text-[11px] font-bold uppercase text-slate-300 hover:border-white hover:text-white transition-all"
                 >
                   Contratar a {headliner.name}
                 </Link>
@@ -258,9 +257,9 @@ export default async function EventPage({ params }: Props) {
               <Link
                 key={e.id}
                 href={`/eventos/${e.slug}`}
-                className="rounded border border-white/10 bg-[#090c12] p-4 hover:border-[#00ff87] transition-all"
+                className="rounded border border-white/10 bg-[#07090e] p-4 hover:border-white/40 transition-all"
               >
-                <p className="text-[10px] font-bold text-[#00ff87]">{formatDate(e.startsAt)}</p>
+                <p className="text-[10px] font-bold text-slate-300">{formatDate(e.startsAt)}</p>
                 <h3 className="mt-1 font-bold text-white uppercase text-xs line-clamp-1">{e.title}</h3>
                 <p className="text-[10px] text-slate-400 font-sans mt-0.5">{e.venueName}</p>
               </Link>

@@ -52,20 +52,20 @@ export default function AboutPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-12 font-mono">
       {/* Hero del sello */}
-      <section className="relative overflow-hidden rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 sm:p-12 shadow-2xl">
-        <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2 border-[#00ff87]" />
-        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-[#00ff87]" />
-        <div className="absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2 border-[#00ff87]" />
-        <div className="absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2 border-[#00ff87]" />
+      <section className="relative overflow-hidden rounded-xl border border-white/15 bg-[#07090e]/95 p-6 sm:p-12 shadow-2xl">
+        <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2 border-slate-300" />
+        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-slate-300" />
+        <div className="absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2 border-slate-300" />
+        <div className="absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2 border-slate-300" />
 
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-[#00ff87]/40 px-2.5 py-1 text-xs font-black text-[#00ff87]">
-            <span className="h-2 w-2 rounded-full bg-[#00ff87] animate-pulse" />
+          <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-white/20 px-2.5 py-1 text-xs font-black text-slate-200">
+            <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
             <span>// MANIFIESTO // INDEPENDIENTE DESDE 2024</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight">
             Nacidos en la{' '}
-            <span className="text-[#00ff87] nv-glow">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
               orilla del río
             </span>
           </h1>
@@ -79,7 +79,7 @@ export default function AboutPage() {
       {/* Principios */}
       <section className="space-y-6" aria-labelledby="principios">
         <div className="space-y-1">
-          <p className="text-xs uppercase tracking-wider text-[#facc15] font-black">
+          <p className="text-xs uppercase tracking-wider text-slate-400 font-black">
             // PILARES FUNDAMENTALES
           </p>
           <h2 id="principios" className="text-2xl font-black text-white uppercase">
@@ -91,7 +91,7 @@ export default function AboutPage() {
           {VALUES.map((v) => (
             <article
               key={v.title}
-              className="rounded-xl border border-[#00ff87]/20 bg-[#0d1017] p-6 hover:border-[#00ff87] transition-all space-y-2"
+              className="rounded-xl border border-white/10 bg-[#07090e] p-6 hover:border-white/30 transition-all space-y-2 shadow-lg"
             >
               <div className="text-2xl">{v.icon}</div>
               <h3 className="text-base font-black text-white uppercase tracking-wider">{v.title}</h3>
@@ -104,7 +104,7 @@ export default function AboutPage() {
       {/* Línea de tiempo */}
       <section className="space-y-6">
         <div className="space-y-1">
-          <p className="text-xs uppercase tracking-wider text-[#00e5ff] font-black">
+          <p className="text-xs uppercase tracking-wider text-slate-400 font-black">
             // HISTORIA CALLEJERA
           </p>
           <h2 className="text-2xl font-black text-white uppercase">
@@ -116,9 +116,9 @@ export default function AboutPage() {
           {MILESTONES.map((m) => (
             <div
               key={m.year}
-              className="rounded-xl border border-white/10 bg-[#090c12] p-5"
+              className="rounded-xl border border-white/10 bg-[#07090e] p-5 shadow-lg"
             >
-              <span className="text-2xl font-black text-[#00ff87]">{m.year}</span>
+              <span className="text-2xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{m.year}</span>
               <h3 className="mt-1.5 text-sm font-black text-white uppercase">{m.title}</h3>
               <p className="mt-1 text-xs font-sans text-slate-400 leading-relaxed">{m.desc}</p>
             </div>
@@ -127,7 +127,7 @@ export default function AboutPage() {
       </section>
 
       {/* Contacto & Booking */}
-      <section className="rounded-xl border border-[#00ff87]/30 bg-black p-8 text-center space-y-4">
+      <section className="rounded-xl border border-white/20 bg-black p-8 text-center space-y-4 shadow-2xl">
         <h2 className="text-xl sm:text-2xl font-black text-white uppercase">
           ¿Interesado en una alianza o booking?
         </h2>
@@ -137,14 +137,14 @@ export default function AboutPage() {
         <div className="pt-2 flex flex-wrap justify-center gap-3">
           <Link
             href="/booking"
-            className="inline-flex items-center gap-2 rounded bg-[#00ff87] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black hover:bg-[#00e572] transition-all"
+            className="inline-flex items-center gap-2 rounded bg-white px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black hover:bg-slate-200 transition-all active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.25)]"
           >
             <span>Ir a Formulario de Booking</span>
             <span>→</span>
           </Link>
           <Link
             href="/politica-de-datos"
-            className="inline-flex items-center rounded border border-[#00ff87]/30 bg-black px-5 py-2.5 text-xs font-bold uppercase text-slate-300 hover:text-white transition-all"
+            className="inline-flex items-center rounded border border-white/20 bg-black px-5 py-2.5 text-xs font-bold uppercase text-slate-300 hover:border-white hover:text-white transition-all"
           >
             Política de Datos
           </Link>

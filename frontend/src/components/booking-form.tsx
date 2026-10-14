@@ -74,7 +74,7 @@ function detailsToRecord(details: ApiErrorDetail[]): Record<string, string> {
 }
 
 const inputCls =
-  'w-full rounded bg-black border border-[#00ff87]/30 px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:border-[#00ff87] focus:ring-1 focus:ring-[#00ff87] focus:outline-none transition-all font-mono';
+  'w-full rounded bg-black/90 border border-white/20 px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:border-white focus:ring-1 focus:ring-white/40 focus:outline-none transition-all font-mono';
 
 function Field({
   id,
@@ -208,7 +208,7 @@ export default function BookingForm({
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 md:p-8 shadow-2xl font-mono"
+      className="rounded-xl border border-white/15 bg-[#07090e]/95 p-6 md:p-8 shadow-2xl font-mono"
     >
       {serverError && (
         <div
@@ -383,7 +383,7 @@ export default function BookingForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-6 inline-flex items-center gap-2 rounded bg-[#00ff87] px-8 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(0,255,135,0.4)] transition-all hover:bg-[#00e572] hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 inline-flex items-center gap-2 rounded bg-white px-8 py-3.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(255,255,255,0.25)] transition-all hover:bg-slate-200 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? 'ENVIANDO SOLICITUD…' : 'ENVIAR SOLICITUD DE BOOKING'}
         {!isSubmitting && (

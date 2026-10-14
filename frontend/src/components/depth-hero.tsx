@@ -1,8 +1,8 @@
 'use client';
 
-// Night Vision & Tactical Street Oscilloscope Canvas
-// Simula un osciloscopio táctico militar de visión nocturna con ondas de fósforo verde,
-// barrido de radar y retícula que reacciona al puntero del usuario.
+// 3D Audio Topography & Wireframe Matrix Canvas (Titanium Gray & Chrome)
+// Paisaje sonoro tridimensional inspirado en topografía de frecuencias analógicas,
+// titanio pulido y reacción interactiva en perspectiva 3D al puntero.
 
 import { useEffect, useRef } from 'react';
 
@@ -51,27 +51,27 @@ export default function DepthHero() {
     function draw() {
       ctx!.clearRect(0, 0, width, height);
 
-      // Fondo oscuro asfalto con leve brillo de fósforo en el centro
+      // Fondo oscuro carbón con resplandor plateado suave
       const bgGrad = ctx!.createRadialGradient(
         width * 0.5,
-        height * 0.5,
-        20,
+        height * 0.45,
+        10,
         width * 0.5,
         height * 0.5,
         width * 0.7
       );
-      bgGrad.addColorStop(0, 'rgba(0, 255, 135, 0.08)');
-      bgGrad.addColorStop(0.6, 'rgba(0, 229, 255, 0.02)');
+      bgGrad.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
+      bgGrad.addColorStop(0.5, 'rgba(148, 163, 184, 0.02)');
       bgGrad.addColorStop(1, 'rgba(4, 5, 7, 0)');
       ctx!.fillStyle = bgGrad;
       ctx!.fillRect(0, 0, width, height);
 
-      step += 0.025;
+      step += 0.02;
 
-      // ── Cuadrícula táctica militar verde ──
-      ctx!.strokeStyle = 'rgba(0, 255, 135, 0.06)';
+      // ── Cuadrícula técnica en gris titanio ──
+      ctx!.strokeStyle = 'rgba(255, 255, 255, 0.03)';
       ctx!.lineWidth = 1;
-      const gridSize = 40;
+      const gridSize = 48;
       for (let x = 0; x < width; x += gridSize) {
         ctx!.beginPath();
         ctx!.moveTo(x, 0);
@@ -85,62 +85,74 @@ export default function DepthHero() {
         ctx!.stroke();
       }
 
-      // ── Línea de barrido de radar verde fósforo ──
-      const sweepX = ((step * 120) % (width + 200)) - 100;
-      const sweepGrad = ctx!.createLinearGradient(sweepX - 80, 0, sweepX, 0);
-      sweepGrad.addColorStop(0, 'rgba(0, 255, 135, 0)');
-      sweepGrad.addColorStop(1, 'rgba(0, 255, 135, 0.12)');
-      ctx!.fillStyle = sweepGrad;
-      ctx!.fillRect(sweepX - 80, 0, 80, height);
+      // ── Topografía de 8 crestas sonoras en perspectiva 3D (estilo Joy Division / OP-1) ──
+      const ridges = 8;
+      const baseY = height * 0.72;
+      const spacing = 18;
 
-      ctx!.strokeStyle = 'rgba(0, 255, 135, 0.35)';
-      ctx!.beginPath();
-      ctx!.moveTo(sweepX, 0);
-      ctx!.lineTo(sweepX, height);
-      ctx!.stroke();
+      for (let r = 0; r < ridges; r++) {
+        const depthFactor = (r + 1) / ridges; // 0..1
+        const yBase = baseY + (r - ridges / 2) * spacing;
+        const alpha = 0.08 + depthFactor * 0.35;
 
-      // ── Ondas de osciloscopio sonoro en verde fósforo ──
-      const waveConfigs = [
-        { color: 'rgba(0, 255, 135, 0.45)', freq: 0.012, amp: 28, speed: 1.2, y: 0.75 },
-        { color: 'rgba(0, 255, 135, 0.25)', freq: 0.008, amp: 20, speed: 0.8, y: 0.72 },
-        { color: 'rgba(0, 229, 255, 0.20)', freq: 0.015, amp: 16, speed: 1.5, y: 0.78 },
-      ];
-
-      for (const w of waveConfigs) {
         ctx!.beginPath();
         ctx!.moveTo(0, height);
 
         for (let x = 0; x <= width; x += 6) {
-          const mFactor = Math.sin((x / width) * Math.PI) * (1 + (1 - mouse.y) * 0.7);
-          const y =
-            height * w.y +
-            Math.sin(x * w.freq + step * w.speed + mouse.x * 2.5) * w.amp * mFactor +
-            Math.cos(x * 0.004 + step * 0.6) * (w.amp * 0.3);
-          ctx!.lineTo(x, y);
+          const normX = x / width;
+          // Deformación de campana hacia el centro
+          const bell = Math.exp(-Math.pow((normX - 0.5) * 3, 2));
+          // Modulación interactiva con el mouse
+          const mouseInfluence = Math.sin((normX + mouse.x) * Math.PI) * (1 - mouse.y * 0.5);
+
+          const wave =
+            Math.sin(normX * 14 + step * (1.2 + r * 0.2) + r) * 16 * bell * mouseInfluence +
+            Math.cos(normX * 8 - step * 0.8 + r * 0.5) * 10 * bell;
+
+          const y = yBase - wave;
+          if (x === 0) ctx!.lineTo(x, y);
+          else ctx!.lineTo(x, y);
         }
 
         ctx!.lineTo(width, height);
         ctx!.closePath();
 
-        const grad = ctx!.createLinearGradient(0, height * 0.65, 0, height);
-        grad.addColorStop(0, w.color);
-        grad.addColorStop(1, 'rgba(4, 5, 7, 0.0)');
-        ctx!.fillStyle = grad;
+        // Relleno oclusión oscura para efecto 3D
+        ctx!.fillStyle = '#080a0f';
         ctx!.fill();
+
+        // Línea de cresta metálica
+        ctx!.strokeStyle = `rgba(226, 232, 240, ${alpha.toFixed(2)})`;
+        ctx!.lineWidth = r === ridges - 1 ? 1.5 : 1;
+        ctx!.stroke();
       }
 
-      // ── Retícula del puntero táctico ──
-      const targetX = mouse.x * width;
-      const targetY = mouse.y * height;
-      ctx!.strokeStyle = 'rgba(0, 255, 135, 0.3)';
+      // ── Haz de escaneo láser plateado ──
+      const sweepX = ((step * 90) % (width + 300)) - 150;
+      const sweepGrad = ctx!.createLinearGradient(sweepX - 80, 0, sweepX, 0);
+      sweepGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      sweepGrad.addColorStop(1, 'rgba(255, 255, 255, 0.08)');
+      ctx!.fillStyle = sweepGrad;
+      ctx!.fillRect(sweepX - 80, 0, 80, height);
+
+      ctx!.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx!.beginPath();
+      ctx!.moveTo(sweepX, 0);
+      ctx!.lineTo(sweepX, height);
+      ctx!.stroke();
+
+      // ── Retícula del puntero con lectura de coordenadas ──
+      const tx = mouse.x * width;
+      const ty = mouse.y * height;
+      ctx!.strokeStyle = 'rgba(255, 255, 255, 0.25)';
       ctx!.lineWidth = 1;
       ctx!.beginPath();
-      ctx!.arc(targetX, targetY, 24, 0, Math.PI * 2);
+      ctx!.arc(tx, ty, 20, 0, Math.PI * 2);
       ctx!.stroke();
 
       ctx!.beginPath();
-      ctx!.arc(targetX, targetY, 6, 0, Math.PI * 2);
-      ctx!.fillStyle = 'rgba(0, 255, 135, 0.5)';
+      ctx!.arc(tx, ty, 4, 0, Math.PI * 2);
+      ctx!.fillStyle = 'rgba(255, 255, 255, 0.6)';
       ctx!.fill();
 
       raf = requestAnimationFrame(draw);

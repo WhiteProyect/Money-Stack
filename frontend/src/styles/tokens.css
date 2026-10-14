@@ -1,48 +1,58 @@
-/* ─── Money-Stack — Tokens: Dark, Callejero & Night Vision ────────────────
-   Estética callejera, underground, nocturna y táctica de Caucasia.
-   Negros profundos, asfalto, fósforo verde night-vision y acentos hazard.
+/* ─── Money-Stack — Tokens: Dark, Callejero, Titanio & Gris Metálico ────────
+   Estética de alta tecnología: asfalto oscuro, titanio líquido, cromo pulido,
+   frecuencias de audio y detalles metálicos con alto contraste.
 ────────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* Profundidades oscuras / Asfalto & Grafito */
-  --depth-0: #040507;   /* Negro puro fondo */
-  --depth-1: #090b10;   /* Asfalto noche */
-  --depth-2: #0f131a;   /* Superficie oscura táctica */
-  --depth-3: #161c26;   /* Panel industrial */
-  --depth-4: #222b3a;   /* Borde metálico oscuro */
-  --depth-5: #323e54;   /* Líneas y detalles */
+  /* Profundidades oscuras / Carbono & Asfalto */
+  --depth-0: #040507;   /* Negro carbón puro */
+  --depth-1: #080a0f;   /* Superficie base oscura */
+  --depth-2: #0e1218;   /* Superficie elevada */
+  --depth-3: #151a24;   /* Panel industrial */
+  --depth-4: #202736;   /* Bordes metálicos */
+  --depth-5: #323d52;   /* Separadores y líneas activas */
 
-  /* Superficies de cristal oscuro y blindado */
-  --surface-glass: rgba(15, 19, 26, 0.88);
-  --surface-glass-strong: rgba(9, 11, 16, 0.95);
-  --border-glass: rgba(0, 255, 135, 0.12);
-  --border-glass-hover: rgba(0, 255, 135, 0.5);
+  /* Escala de Grises Titanio & Cromo */
+  --titanium-100: #ffffff;
+  --titanium-200: #f1f5f9;
+  --titanium-300: #e2e8f0;
+  --titanium-400: #cbd5e1;
+  --titanium-500: #94a3b8;
+  --titanium-600: #64748b;
+  --titanium-700: #475569;
+  --titanium-800: #334155;
+  --titanium-900: #1e293b;
 
-  /* Texto de alto contraste AA */
-  --text-primary: #f8fafc;
+  /* Superficies de cristal metálico blindado */
+  --surface-glass: rgba(14, 18, 24, 0.85);
+  --surface-glass-strong: rgba(8, 10, 15, 0.95);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --border-glass-hover: rgba(255, 255, 255, 0.35);
+
+  /* Texto de alto contraste */
+  --text-primary: #ffffff;
   --text-secondary: #cbd5e1;
-  --text-muted: #8492a6;
+  --text-muted: #94a3b8;
 
-  /* Acentos Night Vision (Fósforo CRT) & Callejero */
-  --accent: #00ff87;         /* Verde fosforescente night vision */
-  --accent-soft: rgba(0, 255, 135, 0.12);
-  --accent-glow: rgba(0, 255, 135, 0.5);
+  /* Acento Titanio / Cromo Metálico */
+  --accent: #f8fafc;
+  --accent-soft: rgba(255, 255, 255, 0.1);
+  --accent-glow: rgba(255, 255, 255, 0.4);
+  --accent-silver: #e2e8f0;
+  --accent-chrome: #94a3b8;
+  --accent-dark: #334155;
 
-  --accent-nv: #00ff87;      /* Fósforo verde NVG */
-  --accent-nv-dim: #059669;  /* Verde oscuro militar */
-  --accent-hazard: #facc15;  /* Amarillo cinta peligro callejera */
-  --accent-rec: #ef4444;     /* Rojo REC grabación callejera */
-  --accent-cyan: #00e5ff;    /* Cian eléctrico secundario */
-
-  /* Gradientes callejeros & Night Vision */
-  --gradient-nv: linear-gradient(135deg, #00ff87 0%, #00e5ff 100%);
-  --gradient-street: linear-gradient(135deg, #00ff87 0%, #facc15 100%);
-  --gradient-fire: linear-gradient(135deg, #facc15 0%, #ef4444 100%);
-
-  /* Estados */
-  --ok: #00ff87;
-  --warning: #facc15;
+  /* Alertas / Estudio */
+  --accent-rec: #ef4444;    /* REC grabación estudio */
+  --accent-alert: #e2e8f0;
+  --ok: #e2e8f0;
+  --warning: #cbd5e1;
   --error: #ef4444;
+
+  /* Gradientes Metálicos */
+  --gradient-titanium: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #64748b 100%);
+  --gradient-chrome: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+  --gradient-metallic: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
 
   /* Tipografía */
   --font-display: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;

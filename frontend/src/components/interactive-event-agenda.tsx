@@ -50,16 +50,16 @@ export default function InteractiveEventAgenda({
   return (
     <div className="w-full font-mono">
       {/* Controles tácticos de la agenda */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-4 shadow-[0_15px_35px_rgba(0,0,0,0.8)]">
-        {/* Pestañas estilo Stencil Militar / Callejero */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-xl border border-white/15 bg-[#07090e]/95 p-4 shadow-[0_15px_35px_rgba(0,0,0,0.85)]">
+        {/* Pestañas estilo Stencil en titanio */}
         <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => setActiveTab('all')}
             className={`rounded px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all ${
               activeTab === 'all'
-                ? 'bg-[#00ff87] text-black shadow-[0_0_12px_rgba(0,255,135,0.5)]'
-                : 'border border-white/10 bg-black text-slate-400 hover:border-[#00ff87] hover:text-[#00ff87]'
+                ? 'bg-white text-black shadow-[0_0_12px_rgba(255,255,255,0.4)]'
+                : 'border border-white/10 bg-black/80 text-slate-400 hover:border-white/40 hover:text-white'
             }`}
           >
             [TODOS ({baseEvents.length})]
@@ -69,8 +69,8 @@ export default function InteractiveEventAgenda({
             onClick={() => setActiveTab('caucasia')}
             className={`rounded px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all ${
               activeTab === 'caucasia'
-                ? 'bg-[#00e5ff] text-black shadow-[0_0_12px_rgba(0,229,255,0.5)]'
-                : 'border border-white/10 bg-black text-slate-400 hover:border-[#00e5ff] hover:text-[#00e5ff]'
+                ? 'bg-slate-200 text-black shadow-[0_0_12px_rgba(226,232,240,0.4)]'
+                : 'border border-white/10 bg-black/80 text-slate-400 hover:border-white/40 hover:text-white'
             }`}
           >
             [📍 CAUCASIA]
@@ -80,8 +80,8 @@ export default function InteractiveEventAgenda({
             onClick={() => setActiveTab('medellin')}
             className={`rounded px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all ${
               activeTab === 'medellin'
-                ? 'bg-[#00ff87] text-black shadow-[0_0_12px_rgba(0,255,135,0.5)]'
-                : 'border border-white/10 bg-black text-slate-400 hover:border-[#00ff87] hover:text-[#00ff87]'
+                ? 'bg-slate-300 text-black shadow-[0_0_12px_rgba(203,213,225,0.4)]'
+                : 'border border-white/10 bg-black/80 text-slate-400 hover:border-white/40 hover:text-white'
             }`}
           >
             [MEDELLÍN]
@@ -91,8 +91,8 @@ export default function InteractiveEventAgenda({
             onClick={() => setActiveTab('festival')}
             className={`rounded px-3 py-1.5 text-xs font-black uppercase tracking-wider transition-all ${
               activeTab === 'festival'
-                ? 'bg-[#facc15] text-black shadow-[0_0_12px_rgba(250,204,21,0.5)]'
-                : 'border border-white/10 bg-black text-slate-400 hover:border-[#facc15] hover:text-[#facc15]'
+                ? 'bg-slate-100 text-black shadow-[0_0_12px_rgba(241,245,249,0.4)]'
+                : 'border border-white/10 bg-black/80 text-slate-400 hover:border-white/40 hover:text-white'
             }`}
           >
             [🔥 FESTIVALES]
@@ -101,7 +101,7 @@ export default function InteractiveEventAgenda({
 
         {/* Input de búsqueda estilo consola */}
         <div className="relative w-full sm:w-64">
-          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-[#00ff87]">
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
             &gt;_
           </span>
           <input
@@ -109,14 +109,14 @@ export default function InteractiveEventAgenda({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="BUSCAR TARIMA O FECHA..."
-            className="w-full rounded bg-black border border-[#00ff87]/30 py-1.5 pl-8 pr-3 text-xs text-white placeholder-slate-500 focus:border-[#00ff87] focus:outline-none uppercase"
+            className="w-full rounded bg-black/80 border border-white/15 py-1.5 pl-8 pr-3 text-xs text-white placeholder-slate-500 focus:border-white/50 focus:outline-none uppercase"
           />
         </div>
       </div>
 
       {/* Grid de eventos */}
       {filteredEvents.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-white/10 bg-[#090c12] p-8 text-center">
+        <div className="mt-6 rounded-xl border border-white/10 bg-[#07090e] p-8 text-center">
           <p className="text-xs text-slate-400 uppercase font-bold">NO HAY FECHAS ACTIVAS CON ESOS FILTROS</p>
           <button
             type="button"
@@ -124,7 +124,7 @@ export default function InteractiveEventAgenda({
               setActiveTab('all');
               setSearchQuery('');
             }}
-            className="mt-2 text-xs text-[#00ff87] hover:underline uppercase"
+            className="mt-2 text-xs text-white hover:underline uppercase font-bold"
           >
             Mostrar todas las fechas →
           </button>

@@ -51,20 +51,20 @@ export default async function BookingPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 space-y-8 font-mono">
-      <header className="relative overflow-hidden rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 sm:p-10 shadow-2xl">
-        <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2 border-[#00ff87]" />
-        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-[#00ff87]" />
-        <div className="absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2 border-[#00ff87]" />
-        <div className="absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2 border-[#00ff87]" />
+      <header className="relative overflow-hidden rounded-xl border border-white/15 bg-[#07090e]/95 p-6 sm:p-10 shadow-2xl">
+        <div className="absolute top-0 left-0 h-3 w-3 border-t-2 border-l-2 border-slate-300" />
+        <div className="absolute top-0 right-0 h-3 w-3 border-t-2 border-r-2 border-slate-300" />
+        <div className="absolute bottom-0 left-0 h-3 w-3 border-b-2 border-l-2 border-slate-300" />
+        <div className="absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2 border-slate-300" />
 
         <div className="relative z-10 max-w-2xl space-y-2.5">
-          <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-[#00ff87]/40 px-2.5 py-1 text-xs font-black text-[#00ff87]">
-            <span className="h-2 w-2 rounded-full bg-[#00ff87] animate-pulse" />
+          <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-white/20 px-2.5 py-1 text-xs font-black text-slate-200">
+            <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
             <span>// CANAL OFICIAL // CONTRATACIONES DIRECTAS</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight">
             Solicitud de{' '}
-            <span className="text-[#00ff87] nv-glow">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
               Booking
             </span>
           </h1>

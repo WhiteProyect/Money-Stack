@@ -33,20 +33,20 @@ export default async function HomePage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-16 sm:space-y-20">
       <JsonLd data={ORGANIZATION_JSONLD} />
 
-      {/* Hero eléctrico, oscuro y callejero con visión nocturna */}
+      {/* Hero eléctrico y oscuro con topografía 3D y ticker infinito */}
       <ElectricHero />
 
-      {/* Reproductor de audio tipo consola / tape deck callejero */}
-      <section aria-label="Reproductor de audio del sello" className="relative z-20 -mt-6 sm:-mt-10">
+      {/* Reproductor de audio tipo consola analógica con síntesis Web Audio y pads */}
+      <section aria-label="Consola de audio y síntesis del sello" className="relative z-20 -mt-6 sm:-mt-10">
         <MusicPlayerBar />
       </section>
 
-      {/* Catálogo interactivo de artistas con filtros en tiempo real */}
+      {/* Catálogo interactivo de artistas con filtros en tiempo real y 3D tilt */}
       <section aria-labelledby="artistas-catalogo" className="space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 font-mono">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00ff87]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00ff87] animate-pulse" />
+            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
               <span>// ROSTER CALLEJERO // TALENTO DEL RÍO</span>
             </div>
             <h2 id="artistas-catalogo" className="mt-1 text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
@@ -58,7 +58,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/artistas"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00ff87] hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white hover:underline"
           >
             <span>Ver cartel completo ({initialArtists.length})</span>
             <span>→</span>
@@ -73,9 +73,9 @@ export default async function HomePage() {
       <section aria-labelledby="eventos-agenda" className="space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 font-mono">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#00e5ff]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00e5ff] animate-pulse" />
-              <span>// TARIMAS & FESTIVALES // SUB-808 BASS</span>
+            <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-pulse" />
+              <span>// TARIMAS &amp; FESTIVALES // SUB-808 BASS</span>
             </div>
             <h2 id="eventos-agenda" className="mt-1 text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
               Agenda de Shows
@@ -86,7 +86,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/eventos"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#00e5ff] hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white hover:underline"
           >
             <span>Ver calendario completo</span>
             <span>→</span>
@@ -100,8 +100,8 @@ export default async function HomePage() {
       {/* Pilares del sello (Estructura Callejera) */}
       <section aria-labelledby="manifiesto-sello" className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-1.5 font-mono">
-          <p className="text-xs uppercase tracking-wider text-[#facc15] font-black">
-            // ESTRUCTURA & MAQUINARIA
+          <p className="text-xs uppercase tracking-wider text-slate-400 font-black">
+            // ESTRUCTURA &amp; MAQUINARIA
           </p>
           <h2 id="manifiesto-sello" className="text-2xl sm:text-3xl font-black text-white uppercase">
             El Ecosistema Money-Stack
@@ -112,7 +112,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 font-mono">
-          <div className="rounded-xl border border-[#00ff87]/20 bg-[#0d1017] p-5 hover:border-[#00ff87] transition-all">
+          <div className="rounded-xl border border-white/10 bg-[#07090e] p-5 hover:border-white/30 transition-all shadow-lg">
             <span className="text-2xl mb-3 block">🎛️</span>
             <h3 className="text-base font-black text-white uppercase tracking-wider">Estudio Central</h3>
             <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
@@ -120,7 +120,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#00e5ff]/20 bg-[#0d1017] p-5 hover:border-[#00e5ff] transition-all">
+          <div className="rounded-xl border border-white/10 bg-[#07090e] p-5 hover:border-white/30 transition-all shadow-lg">
             <span className="text-2xl mb-3 block">📡</span>
             <h3 className="text-base font-black text-white uppercase tracking-wider">Distribución Global</h3>
             <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
@@ -128,7 +128,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#facc15]/20 bg-[#0d1017] p-5 hover:border-[#facc15] transition-all">
+          <div className="rounded-xl border border-white/10 bg-[#07090e] p-5 hover:border-white/30 transition-all shadow-lg">
             <span className="text-2xl mb-3 block">🎪</span>
             <h3 className="text-base font-black text-white uppercase tracking-wider">Tarimas Masivas</h3>
             <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
@@ -136,7 +136,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="rounded-xl border border-[#ef4444]/20 bg-[#0d1017] p-5 hover:border-[#ef4444] transition-all">
+          <div className="rounded-xl border border-white/10 bg-[#07090e] p-5 hover:border-white/30 transition-all shadow-lg">
             <span className="text-2xl mb-3 block">📋</span>
             <h3 className="text-base font-black text-white uppercase tracking-wider">Booking Directo</h3>
             <p className="mt-1.5 text-xs text-slate-400 font-sans leading-relaxed">
@@ -147,14 +147,14 @@ export default async function HomePage() {
       </section>
 
       {/* CTA de Contrataciones Callejeras */}
-      <section className="relative overflow-hidden rounded-2xl border border-[#00ff87]/30 bg-black p-8 sm:p-12 text-center shadow-2xl font-mono">
-        <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-[#00ff87]" />
-        <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-[#00ff87]" />
-        <div className="absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-[#00ff87]" />
-        <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-[#00ff87]" />
+      <section className="relative overflow-hidden rounded-2xl border border-white/20 bg-black p-8 sm:p-12 text-center shadow-2xl font-mono">
+        <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-slate-300" />
+        <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-slate-300" />
+        <div className="absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-slate-300" />
+        <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-slate-300" />
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-          <span className="inline-flex items-center gap-1.5 rounded bg-[#facc15] px-3 py-0.5 text-[11px] font-black uppercase text-black">
+          <span className="inline-flex items-center gap-1.5 rounded bg-slate-900 border border-white/20 px-3 py-0.5 text-[11px] font-black uppercase text-slate-200">
             ⚡ RESERVAS 2026-2027 // TRATO DIRECTO
           </span>
           <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
@@ -166,7 +166,7 @@ export default async function HomePage() {
           <div className="pt-2 flex flex-wrap justify-center gap-3">
             <Link
               href="/booking"
-              className="inline-flex items-center gap-2 rounded bg-[#00ff87] px-7 py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(0,255,135,0.4)] hover:bg-[#00e572] transition-all"
+              className="inline-flex items-center gap-2 rounded bg-white px-7 py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:bg-slate-200 transition-all active:scale-95"
             >
               <span>Solicitar Booking de Artistas</span>
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
@@ -175,7 +175,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/el-sello"
-              className="inline-flex items-center gap-2 rounded border border-[#00ff87]/40 bg-black px-6 py-3 text-xs font-bold uppercase tracking-wider text-[#00ff87] hover:bg-[#00ff87]/10 transition-all"
+              className="inline-flex items-center gap-2 rounded border border-white/20 bg-black/80 px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-200 hover:border-white/50 hover:bg-white/10 transition-all"
             >
               <span>Conoce el Sello</span>
             </Link>

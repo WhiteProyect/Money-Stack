@@ -31,46 +31,46 @@ export default function VisorFrame({
 
   return (
     <Component
-      className={`group relative rounded-xl border border-[#00ff87]/25 bg-[#090c12] font-mono ${
-        glow ? 'shadow-[0_0_30px_rgba(0,255,135,0.2)]' : ''
+      className={`group relative rounded-xl border border-white/15 bg-[#07090e] font-mono ${
+        glow ? 'shadow-[0_0_30px_rgba(255,255,255,0.08)]' : ''
       } ${className}`}
     >
-      {/* Esquinas tácticas Night Vision */}
+      {/* Esquinas tácticas en titanio plateado */}
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute -top-px -left-px border-t-2 border-l-2 border-[#00ff87] ${sizeClasses} opacity-80 group-hover:opacity-100 transition-opacity`}
+        className={`pointer-events-none absolute -top-px -left-px border-t-2 border-l-2 border-slate-300 ${sizeClasses} opacity-80 group-hover:opacity-100 group-hover:border-white transition-all`}
       />
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute -top-px -right-px border-t-2 border-r-2 border-[#00ff87] ${sizeClasses} opacity-80 group-hover:opacity-100 transition-opacity`}
+        className={`pointer-events-none absolute -top-px -right-px border-t-2 border-r-2 border-slate-300 ${sizeClasses} opacity-80 group-hover:opacity-100 group-hover:border-white transition-all`}
       />
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute -bottom-px -left-px border-b-2 border-l-2 border-[#00ff87] ${sizeClasses} opacity-80 group-hover:opacity-100 transition-opacity`}
+        className={`pointer-events-none absolute -bottom-px -left-px border-b-2 border-l-2 border-slate-300 ${sizeClasses} opacity-80 group-hover:opacity-100 group-hover:border-white transition-all`}
       />
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute -bottom-px -right-px border-b-2 border-r-2 border-[#00ff87] ${sizeClasses} opacity-80 group-hover:opacity-100 transition-opacity`}
+        className={`pointer-events-none absolute -bottom-px -right-px border-b-2 border-r-2 border-slate-300 ${sizeClasses} opacity-80 group-hover:opacity-100 group-hover:border-white transition-all`}
       />
 
       {/* Barra superior HUD */}
       {(label || telemetry) && (
         <div
-          className="flex items-center justify-between border-b border-[#00ff87]/20 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-wider text-slate-400"
+          className="flex items-center justify-between border-b border-white/10 bg-black/60 px-4 py-2 text-[10px] uppercase tracking-wider text-slate-400"
           aria-hidden="true"
         >
           <div className="flex items-center gap-2">
             {statusDot && (
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00ff87] animate-pulse shadow-[0_0_6px_#00ff87]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
             )}
             {label && (
-              <span className="font-bold text-[#00ff87]">
+              <span className="font-bold text-slate-200">
                 {label}
               </span>
             )}
           </div>
           {telemetry && (
-            <span className="text-[10px] font-mono text-[#facc15]">
+            <span className="text-[10px] font-mono text-slate-400">
               {telemetry}
             </span>
           )}

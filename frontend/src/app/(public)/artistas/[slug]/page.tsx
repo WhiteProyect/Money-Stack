@@ -95,21 +95,21 @@ export default async function ArtistPage({ params }: Props) {
 
       {/* Migas de pan estilo terminal */}
       <nav aria-label="Migas de pan" className="flex items-center gap-2 text-xs text-slate-400">
-        <Link href="/" className="hover:text-[#00ff87] transition-colors">
+        <Link href="/" className="hover:text-white transition-colors">
           INICIO
         </Link>
         <span>/</span>
-        <Link href="/artistas" className="hover:text-[#00ff87] transition-colors">
+        <Link href="/artistas" className="hover:text-white transition-colors">
           ARTISTAS
         </Link>
         <span>/</span>
-        <span className="text-[#00ff87] font-bold">{artist.name.toUpperCase()}</span>
+        <span className="text-white font-bold">{artist.name.toUpperCase()}</span>
       </nav>
 
-      {/* Cabecera oscura con visión nocturna */}
-      <section className="relative overflow-hidden rounded-xl border border-[#00ff87]/30 bg-[#090c12] shadow-2xl">
-        <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-[#00ff87] z-20 pointer-events-none" />
-        <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-[#00ff87] z-20 pointer-events-none" />
+      {/* Cabecera oscura con acabado gris titanio */}
+      <section className="relative overflow-hidden rounded-xl border border-white/15 bg-[#07090e]/95 shadow-2xl">
+        <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-slate-300 z-20 pointer-events-none" />
+        <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-slate-300 z-20 pointer-events-none" />
 
         <div className="relative h-60 sm:h-72 w-full overflow-hidden bg-black">
           <Image
@@ -119,14 +119,13 @@ export default async function ArtistPage({ params }: Props) {
             priority
             className="object-cover filter grayscale contrast-125"
           />
-          <div className="absolute inset-0 bg-[#00ff87]/10 mix-blend-color" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090c12] via-[#090c12]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/60 to-transparent" />
         </div>
 
         <div className="relative -mt-20 sm:-mt-24 flex flex-col md:flex-row md:items-end justify-between gap-6 px-6 sm:px-8 pb-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5 text-center sm:text-left">
-            {/* Avatar con marco night vision */}
-            <div className="relative h-32 w-32 sm:h-40 sm:w-40 shrink-0 overflow-hidden rounded-lg border-2 border-[#00ff87] bg-black shadow-[0_0_20px_rgba(0,255,135,0.4)]">
+            {/* Avatar con marco de titanio */}
+            <div className="relative h-32 w-32 sm:h-40 sm:w-40 shrink-0 overflow-hidden rounded-lg border-2 border-white/30 bg-black shadow-[0_0_20px_rgba(255,255,255,0.15)]">
               <Image
                 src={avatar}
                 alt={artist.name}
@@ -139,15 +138,15 @@ export default async function ArtistPage({ params }: Props) {
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
                 {artist.isFeatured && (
-                  <span className="rounded bg-[#facc15] px-2 py-0.5 text-[9px] font-black uppercase text-black">
+                  <span className="rounded bg-white px-2 py-0.5 text-[9px] font-black uppercase text-black shadow-[0_0_10px_rgba(255,255,255,0.3)]">
                     ★ TOP CARTEL
                   </span>
                 )}
-                <span className="rounded bg-black border border-[#00ff87]/50 px-2 py-0.5 text-[9px] font-bold text-[#00ff87]">
+                <span className="rounded bg-black border border-white/20 px-2 py-0.5 text-[9px] font-bold text-slate-300">
                   [ROSTER CAUCASIA]
                 </span>
                 {artist.isBookable && (
-                  <span className="rounded bg-black border border-emerald-500/50 px-2 py-0.5 text-[9px] font-bold text-emerald-300">
+                  <span className="rounded bg-black border border-white/30 px-2 py-0.5 text-[9px] font-bold text-slate-200">
                     ● BOOKING DISPONIBLE
                   </span>
                 )}
@@ -162,7 +161,7 @@ export default async function ArtistPage({ params }: Props) {
                   {artist.genres.map((g) => (
                     <span
                       key={g}
-                      className="rounded bg-black border border-white/10 px-2 py-0.5 text-[10px] text-slate-300"
+                      className="rounded bg-black/80 border border-white/10 px-2 py-0.5 text-[10px] text-slate-300"
                     >
                       [{g.toUpperCase()}]
                     </span>
@@ -177,7 +176,7 @@ export default async function ArtistPage({ params }: Props) {
             {artist.isBookable && (
               <Link
                 href={`/booking?artist=${artist.slug}`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded bg-[#00ff87] px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_15px_rgba(0,255,135,0.4)] hover:bg-[#00e572] transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded bg-white px-6 py-2.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:bg-slate-200 transition-all active:scale-95"
               >
                 <span>Contratar Artista</span>
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
@@ -196,7 +195,7 @@ export default async function ArtistPage({ params }: Props) {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      className="h-9 w-9 flex items-center justify-center rounded border border-[#00ff87]/30 bg-black text-xs hover:border-[#00ff87] hover:text-[#00ff87] transition-colors"
+                      className="h-9 w-9 flex items-center justify-center rounded border border-white/20 bg-black text-xs hover:border-white hover:text-white transition-colors"
                       title={item.label}
                     >
                       {item.icon}
@@ -211,10 +210,10 @@ export default async function ArtistPage({ params }: Props) {
 
       {/* Biografía & Ficha de booking */}
       <div className="grid gap-6 lg:grid-cols-12">
-        <section className="lg:col-span-8 rounded-xl border border-[#00ff87]/20 bg-[#090c12] p-6 sm:p-8 space-y-3">
+        <section className="lg:col-span-8 rounded-xl border border-white/10 bg-[#07090e] p-6 sm:p-8 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-black uppercase tracking-wider text-[#00ff87]">
-              // PERFIL & IDENTIDAD
+            <h2 className="text-base font-black uppercase tracking-wider text-white">
+              // PERFIL &amp; IDENTIDAD
             </h2>
             <AudioVisualizer isPlaying={true} bars={8} className="h-3" />
           </div>
@@ -224,8 +223,8 @@ export default async function ArtistPage({ params }: Props) {
           </p>
         </section>
 
-        <div className="lg:col-span-4 rounded-xl border border-[#00ff87]/20 bg-[#090c12] p-6 space-y-3 text-xs">
-          <h3 className="font-black uppercase tracking-wider text-[#facc15]">
+        <div className="lg:col-span-4 rounded-xl border border-white/10 bg-[#07090e] p-6 space-y-3 text-xs">
+          <h3 className="font-black uppercase tracking-wider text-slate-200">
             // FICHA DE BOOKING
           </h3>
           <ul className="space-y-2 text-slate-300">
@@ -243,12 +242,12 @@ export default async function ArtistPage({ params }: Props) {
             </li>
             <li className="flex justify-between border-b border-white/5 pb-1.5">
               <span className="text-slate-400">RIDER:</span>
-              <span className="font-bold text-[#00ff87]">INCLUIDO CONTRATO</span>
+              <span className="font-bold text-slate-200">INCLUIDO CONTRATO</span>
             </li>
           </ul>
           <Link
             href={`/booking?artist=${artist.slug}`}
-            className="mt-3 block w-full text-center rounded bg-black border border-[#00ff87]/40 py-2 font-bold uppercase text-[10px] text-[#00ff87] hover:bg-[#00ff87]/10 transition-colors"
+            className="mt-3 block w-full text-center rounded bg-black border border-white/20 py-2 font-bold uppercase text-[10px] text-slate-200 hover:border-white hover:text-white transition-colors"
           >
             Consultar fechas disponibles →
           </Link>
@@ -261,11 +260,11 @@ export default async function ArtistPage({ params }: Props) {
           Próximas Tarimas de {artist.name}
         </h2>
         {events.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-white/10 bg-[#090c12] p-6 text-center">
+          <div className="rounded-xl border border-dashed border-white/10 bg-[#07090e] p-6 text-center">
             <p className="text-xs text-slate-400">Sin fechas públicas en este momento.</p>
             <Link
               href={`/booking?artist=${artist.slug}`}
-              className="mt-2 inline-block text-xs font-bold text-[#00ff87] hover:underline"
+              className="mt-2 inline-block text-xs font-bold text-white hover:underline"
             >
               Hacer propuesta de booking →
             </Link>

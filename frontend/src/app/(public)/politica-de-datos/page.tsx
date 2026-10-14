@@ -44,8 +44,8 @@ const SECTIONS = [
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 space-y-6 font-mono">
-      <header className="rounded-xl border border-[#00ff87]/30 bg-[#090c12] p-6 sm:p-10 shadow-2xl">
-        <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-[#00ff87]/40 px-2.5 py-1 text-xs font-black text-[#00ff87]">
+      <header className="rounded-xl border border-white/15 bg-[#07090e]/95 p-6 sm:p-10 shadow-2xl">
+        <div className="inline-flex items-center gap-2 rounded bg-black/80 border border-white/20 px-2.5 py-1 text-xs font-black text-slate-200">
           <span>// LEY 1581 DE 2012 // REPÚBLICA DE COLOMBIA</span>
         </div>
         <h1 className="mt-2 text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
@@ -57,10 +57,10 @@ export default function PrivacyPage() {
         </p>
       </header>
 
-      <div className="rounded-xl border border-white/10 bg-[#090c12] p-6 sm:p-8 space-y-6">
+      <div className="rounded-xl border border-white/10 bg-[#07090e] p-6 sm:p-8 space-y-6">
         {SECTIONS.map((s) => (
           <section key={s.title} className="border-b border-white/5 pb-5 last:border-b-0 last:pb-0">
-            <h2 className="text-sm font-bold uppercase text-[#00ff87]">{s.title}</h2>
+            <h2 className="text-sm font-bold uppercase text-white">{s.title}</h2>
             <p className="mt-1.5 leading-relaxed text-xs text-slate-300 font-sans">{s.body}</p>
           </section>
         ))}
