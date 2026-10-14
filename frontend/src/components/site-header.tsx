@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CommandPalette from './command-palette';
 
 const NAV = [
   { href: '/', label: 'Inicio' },
@@ -46,8 +47,10 @@ export default function SiteHeader() {
           ))}
         </nav>
 
-        {/* CTAs callejeros */}
+        {/* Búsqueda rápida (Ctrl+K) & CTAs */}
         <div className="flex items-center gap-2.5">
+          <CommandPalette />
+
           <Link
             href="/booking"
             className="hidden sm:inline-flex items-center gap-1.5 rounded bg-white px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_0_15px_rgba(255,255,255,0.25)] hover:bg-slate-200 transition-all active:scale-95"
